@@ -598,7 +598,7 @@ export default function Generator() {
           </label>
           <div className="relative h-full flex flex-col">
             {result && (
-              <div className="flex justify-end gap-2 mb-2">
+              <div className="flex flex-wrap justify-end gap-2 mb-2">
                 <button
                   onClick={() => window.open(`https://www.google.com/search?q=${encodeURIComponent(`${agency} ${action} requirements Philippines ${new Date().getFullYear()}`)}`, '_blank')}
                   className="text-xs font-medium bg-white hover:bg-violet-50 text-violet-700 border border-violet-200 py-1.5 px-3 rounded-lg shadow-sm dark:bg-gray-700 dark:text-violet-300 dark:border-gray-600 dark:hover:bg-gray-600 transition-all flex items-center gap-1"
