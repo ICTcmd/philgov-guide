@@ -71,18 +71,13 @@ export async function POST(req: Request) {
     }
     // Location is optional
 
-    const apiKey = process.env.GOOGLE_API_KEY?.trim();
-    console.log("API: API Key present?", !!apiKey);
+    const googleKey = process.env.GOOGLE_API_KEY?.trim();
+    const openaiKey = process.env.OPENAI_API_KEY?.trim();
+    console.log("API: Providers:", { google: !!googleKey, openai: !!openaiKey });
     let generatedContent = "";
 
-    if (apiKey) {
-      // Use Real AI if Key is present
-      console.log("API: Initializing Gemini...");
-      const genAI = new GoogleGenerativeAI(apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash"});
-
-      // 3. Security: Prompt Hardening (Separating instructions from user data)
-      const prompt = `You are a friendly and helpful expert on Philippine Government Services (PhilGov).
+    // Common prompt content
+    const basePrompt = `You are a friendly and helpful expert on Philippine Government Services (PhilGov).
       
       INSTRUCTIONS:
       - Your goal is to make complex requirements easy and fun to understand.
@@ -116,11 +111,58 @@ export async function POST(req: Request) {
       **💡 Pro Tip**
       (Helpful advice)`;
 
-      console.log("API: Sending prompt to Gemini...");
-      const result = await model.generateContent(prompt);
+    async function tryGoogle(): Promise<string> {
+      if (!googleKey) throw new Error("NO_GOOGLE_KEY");
+      const genAI = new GoogleGenerativeAI(googleKey);
+      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash"});
+      const result = await model.generateContent(basePrompt);
       const response = await result.response;
-      generatedContent = response.text();
-    } else {
+      return response.text();
+    }
+
+    async function tryOpenAI(): Promise<string> {
+      if (!openaiKey) throw new Error("NO_OPENAI_KEY");
+      const resp = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${openaiKey}`,
+        },
+        body: JSON.stringify({
+          model: "gpt-4o-mini",
+          messages: [
+            { role: "system", content: "You are a friendly and helpful expert on Philippine Government Services (PhilGov). Follow the instructions strictly and return clean text without markdown headers, using **bold** for section titles." },
+            { role: "user", content: basePrompt }
+          ],
+          temperature: 0.6,
+        }),
+      });
+      if (!resp.ok) {
+        const errText = await resp.text();
+        throw new Error(`OPENAI_ERROR_${resp.status}:${errText}`);
+      }
+      const data = await resp.json();
+      const text = data.choices?.[0]?.message?.content?.trim();
+      return text || "Sorry, I couldn't generate the guide right now.";
+    }
+
+    // Provider selection: prefer Google, fall back to OpenAI, else Mock
+    if (googleKey || openaiKey) {
+      try {
+        generatedContent = googleKey ? await tryGoogle() : await tryOpenAI();
+      } catch (err) {
+        console.warn("Primary provider failed, attempting fallback:", err);
+        if (googleKey && openaiKey) {
+          try {
+            generatedContent = await tryOpenAI();
+          } catch (err2) {
+            console.error("Fallback provider failed:", err2);
+          }
+        }
+      }
+    }
+
+    if (!generatedContent) {
       // Fallback to Mock if no Key
       console.log("API: Using Mock Mode");
       generatedContent = `[MOCK MODE: No API Key Detected]
