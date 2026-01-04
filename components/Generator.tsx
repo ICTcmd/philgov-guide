@@ -50,14 +50,15 @@ export default function Generator() {
   const linkify = (text: string) => {
     const parts = text.split(/\n/);
     return parts.map((line, i) => {
-      // Split by bold (**...**) or URLs
-      const tokens = line.split(/(\*\*.*?\*\*|https?:\/\/\S+)/g);
+      // Split by bold (**...**) or URLs (http/https or www.)
+      const tokens = line.split(/(\*\*.*?\*\*|https?:\/\/\S+|www\.\S+)/g);
       return (
         <p key={i} className="mb-2 min-h-[1.2em]">
           {tokens.map((t, j) => {
-            if (t.match(/^https?:\/\//)) {
+            if (t.match(/^(https?:\/\/|www\.)/)) {
+              const href = t.startsWith('www.') ? `https://${t}` : t;
               return (
-                <a key={j} href={t} target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline break-all">
+                <a key={j} href={href} target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:underline break-all">
                   {t}
                 </a>
               );
