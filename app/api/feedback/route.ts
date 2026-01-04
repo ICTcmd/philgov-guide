@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { google } from 'googleapis';
 
 const rateLimitMap = new Map<string, { count: number; startTime: number }>();
 const RATE_LIMIT_WINDOW = 60 * 1000;
@@ -65,6 +66,41 @@ export async function POST(req: Request) {
       timestamp: new Date().toISOString(),
     };
 
+    const sheetsId = process.env.GOOGLE_SHEETS_ID?.trim();
+    const svcEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL?.trim();
+    const svcKeyRaw = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
+    const svcKey = svcKeyRaw ? svcKeyRaw.replace(/\\n/g, '\n') : undefined;
+
+    if (sheetsId && svcEmail && svcKey) {
+      try {
+        const auth = new google.auth.JWT({
+          email: svcEmail,
+          key: svcKey,
+          scopes: ['https://www.googleapis.com/auth/spreadsheets'],
+        });
+        const sheets = google.sheets({ version: 'v4', auth });
+        const values = [[
+          payload.timestamp,
+          payload.name,
+          payload.email,
+          payload.message,
+          String(payload.rating),
+          payload.page,
+          payload.ip,
+          payload.userAgent,
+        ]];
+        await sheets.spreadsheets.values.append({
+          spreadsheetId: sheetsId,
+          range: 'A1',
+          valueInputOption: 'USER_ENTERED',
+          insertDataOption: 'INSERT_ROWS',
+          requestBody: { values },
+        });
+      } catch (err) {
+        console.error('Feedback sheets error', err);
+      }
+    }
+
     if (webhookUrl) {
       try {
         await fetch(webhookUrl, {
@@ -84,4 +120,3 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Unexpected error' }, { status: 500 });
   }
 }
-
