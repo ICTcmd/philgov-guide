@@ -16,6 +16,29 @@ export default function Generator() {
   const [detectionMethod, setDetectionMethod] = useState<null | 'gps' | 'ip' | 'manual' | 'map'>(null);
   const [showMapPicker, setShowMapPicker] = useState(false);
   const [mapStatus, setMapStatus] = useState<string>('');
+  const [recentSearches, setRecentSearches] = useState<Array<{ agency: string, action: string, date: number }>>([]);
+
+  useEffect(() => {
+    const saved = localStorage.getItem('recentSearches');
+    if (saved) {
+      try {
+        setRecentSearches(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse recent searches", e);
+      }
+    }
+  }, []);
+
+  const addToRecent = (newAgency: string, newAction: string) => {
+    const newItem = { agency: newAgency, action: newAction, date: Date.now() };
+    setRecentSearches(prev => {
+      const filtered = prev.filter(item => !(item.agency === newAgency && item.action === newAction));
+      const updated = [newItem, ...filtered].slice(0, 5);
+      localStorage.setItem('recentSearches', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   const presets = [
     { label: 'Renew Passport', agency: 'DFA (Passport)', action: 'Renew passport' },
     { label: 'National ID', agency: 'PSA (National ID)', action: 'Apply for PhilSys ID' },
@@ -132,6 +155,7 @@ export default function Generator() {
         setError(data.error);
       } else {
         setResult(data.result);
+        addToRecent(agency, action);
         setIsMock(typeof data.result === 'string' && data.result.startsWith('[MOCK MODE'));
       }
     } catch (error) {
@@ -419,6 +443,24 @@ export default function Generator() {
               </button>
             ))}
           </div>
+
+          {recentSearches.length > 0 && (
+            <div className="mb-4">
+              <p className="text-xs font-bold text-gray-400 dark:text-gray-500 mb-2 uppercase tracking-wide">Recent</p>
+              <div className="flex flex-wrap gap-2">
+                {recentSearches.map((item, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => { setAgency(item.agency); setAction(item.action); }}
+                    className="text-xs flex items-center gap-1 px-3 py-1.5 rounded-lg bg-violet-50 text-violet-700 border border-violet-100 hover:bg-violet-100 transition-colors dark:bg-gray-700 dark:text-violet-300 dark:border-gray-600"
+                  >
+                    <svg className="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span className="truncate max-w-[200px]">{item.action} <span className="opacity-50">({item.agency})</span></span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           <div>
             <label htmlFor="agency-select" className="block mb-2 text-sm font-bold text-gray-700 dark:text-white">
