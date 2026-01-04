@@ -412,21 +412,12 @@ export default function Generator() {
   return (
     <section id="generator" className="bg-white dark:bg-gray-900 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
       <div className="max-w-screen-md mx-auto text-center mb-8">
-        <h2 className="mb-4 text-4xl tracking-tight font-extrabold font-display text-gray-900 dark:text-white">
+        <h2 className="mb-4 text-5xl md:text-6xl tracking-tight font-extrabold font-display text-gray-900 dark:text-white">
           JuanGuide
         </h2>
         <p className="mb-4 font-light text-gray-500 sm:text-xl dark:text-gray-400">
           Select a service or ask a question to get your instant guide.
         </p>
-      </div>
-
-      <div className="bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 rounded-2xl p-4 flex items-start gap-3 text-sm text-blue-800 dark:text-blue-200 mb-8">
-        <svg className="flex-shrink-0 w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-          <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-        </svg>
-        <div>
-          <span className="font-bold">Just a friendly reminder!</span> JuanGuide is a <strong>guide</strong> to help you prepare. We <strong>do not</strong> process documents or applications directly.
-        </div>
       </div>
 
       <div className="flex flex-col gap-8 max-w-4xl mx-auto">
