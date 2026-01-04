@@ -567,6 +567,13 @@ export default function Generator() {
             {result && (
               <div className="flex justify-end gap-2 mb-2">
                 <button
+                  onClick={() => window.open(`https://www.google.com/search?q=${encodeURIComponent(`${agency} ${action} requirements Philippines ${new Date().getFullYear()}`)}`, '_blank')}
+                  className="text-xs font-medium bg-white hover:bg-violet-50 text-violet-700 border border-violet-200 py-1.5 px-3 rounded-lg shadow-sm dark:bg-gray-700 dark:text-violet-300 dark:border-gray-600 dark:hover:bg-gray-600 transition-all flex items-center gap-1"
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                  Verify Info
+                </button>
+                <button
                   onClick={copyToClipboard}
                   className="text-xs font-medium bg-white hover:bg-violet-50 text-violet-700 border border-violet-200 py-1.5 px-3 rounded-lg shadow-sm dark:bg-gray-700 dark:text-violet-300 dark:border-gray-600 dark:hover:bg-gray-600 transition-all flex items-center gap-1"
                 >

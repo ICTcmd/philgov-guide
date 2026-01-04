@@ -81,6 +81,7 @@ export async function POST(req: Request) {
     let generatedContent = "";
 
     const mapsLink = `https://www.google.com/maps/search/${encodeURIComponent(`nearest ${agency} to ${location || ""}`)}`;
+    const currentYear = new Date().getFullYear();
     const basePrompt = `You are a friendly and helpful expert on Philippine Government Services (PhilGov).
       
       INSTRUCTIONS:
@@ -90,6 +91,12 @@ export async function POST(req: Request) {
       - Do NOT use Markdown headers like ###. Use **Bold Text** for headers.
       - **URLS:** Always use valid URLs starting with https://. Double check for typos (e.g. avoid 'wwww').
       
+      ACCURACY & SAFETY PROTOCOLS:
+      - **Current Year:** It is currently ${currentYear}. If requirements have changed recently, mention that.
+      - **Uncertainty:** If you are not 100% sure about a fee or specific requirement, say "approximate" or "check with the office" instead of guessing a number.
+      - **Verification:** ALWAYS end your response by encouraging the user to verify with the official agency website or hotline.
+      - **Official Links:** If you know the official website (e.g., www.sss.gov.ph), explicitly list it.
+
       CRITICAL LOCATION INSTRUCTION:
       - The user is in: "${location || "Not specified"}".
       - **DO NOT GUESS** if a specific branch exists or not.
