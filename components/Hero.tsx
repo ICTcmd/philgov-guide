@@ -5,7 +5,7 @@ export default function Hero() {
     <section className="bg-gradient-to-b from-violet-50 to-white dark:from-gray-900 dark:to-gray-900">
       <div className="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-24 lg:px-12">
         <h1 className="mb-4 text-4xl font-extrabold font-display tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
-          Government Requirements Made <span className="text-violet-600 dark:text-violet-400">Easy & Fun</span> 🇵🇭
+          Government Requirements Made <span className="text-violet-600 dark:text-violet-400">Easy</span> 🇵🇭
         </h1>
         <p className="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">
           No more confusion. Get clear, step-by-step guides for SSS, PhilHealth, DFA, and more in seconds. Walang hassle!
