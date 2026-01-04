@@ -429,9 +429,9 @@ export default function Generator() {
         </div>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-8">
+      <div className="flex flex-col gap-8 max-w-4xl mx-auto">
         {/* Input Section */}
-        <div className="w-full md:w-1/2 space-y-5 bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-xl border border-violet-100 dark:border-gray-700">
+        <div className="w-full space-y-5 bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-xl border border-violet-100 dark:border-gray-700">
           <div className="flex flex-wrap gap-2 mb-2">
             {presets.map((p) => (
               <button
@@ -601,7 +601,7 @@ export default function Generator() {
         </div>
 
         {/* Output Section */}
-        <div className="w-full md:w-1/2">
+        <div className="w-full">
           <label className="block mb-2 text-sm font-bold text-gray-900 dark:text-white">
             Your Simple Guide
           </label>
