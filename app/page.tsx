@@ -2,6 +2,7 @@ import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import Generator from "@/components/Generator";
 import HowItWorks from "@/components/HowItWorks";
+import Feedback from "@/components/Feedback";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <HowItWorks />
       <Generator />
       <Features />
+      <Feedback />
     </main>
   );
 }
