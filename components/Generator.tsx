@@ -562,7 +562,25 @@ export default function Generator() {
           <label className="block mb-2 text-sm font-bold text-gray-900 dark:text-white">
             Your Simple Guide
           </label>
-          <div className="relative h-full">
+          <div className="relative h-full flex flex-col">
+            {result && (
+              <div className="flex justify-end gap-2 mb-2">
+                <button
+                  onClick={copyToClipboard}
+                  className="text-xs font-medium bg-white hover:bg-violet-50 text-violet-700 border border-violet-200 py-1.5 px-3 rounded-lg shadow-sm dark:bg-gray-700 dark:text-violet-300 dark:border-gray-600 dark:hover:bg-gray-600 transition-all flex items-center gap-1"
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                  Copy
+                </button>
+                <button
+                  onClick={downloadText}
+                  className="text-xs font-medium bg-white hover:bg-violet-50 text-violet-700 border border-violet-200 py-1.5 px-3 rounded-lg shadow-sm dark:bg-gray-700 dark:text-violet-300 dark:border-gray-600 dark:hover:bg-gray-600 transition-all flex items-center gap-1"
+                >
+                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                  Download
+                </button>
+              </div>
+            )}
             <div className="p-6 w-full text-sm text-gray-800 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-200 min-h-[500px] whitespace-pre-wrap leading-relaxed shadow-inner">
               {result ? linkify(result) : (
                 <div className="h-full flex flex-col items-center justify-center text-gray-400 space-y-3">
@@ -571,22 +589,6 @@ export default function Generator() {
                 </div>
               )}
             </div>
-            {result && (
-              <div className="absolute top-4 right-4 flex space-x-2">
-                <button
-                  onClick={copyToClipboard}
-                  className="text-xs bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 py-1.5 px-3 rounded-lg shadow-sm dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 transition-all"
-                >
-                  Copy
-                </button>
-                <button
-                  onClick={downloadText}
-                  className="text-xs bg-white hover:bg-gray-100 text-gray-700 border border-gray-200 py-1.5 px-3 rounded-lg shadow-sm dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 transition-all"
-                >
-                  Download
-                </button>
-              </div>
-            )}
           </div>
           {isMock && (
              <p className="mt-2 text-xs text-amber-600 dark:text-amber-400">
