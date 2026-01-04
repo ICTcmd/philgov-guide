@@ -89,12 +89,12 @@ export async function POST(req: Request) {
       - Use "Taglish" (Conversational Filipino/English) to be friendly.
       - Do NOT use Markdown headers like ###. Use **Bold Text** for headers.
       
-      CRITICAL REALITY CHECK (ANTI-HALLUCINATION):
+      CRITICAL LOCATION INSTRUCTION:
       - The user is in: "${location || "Not specified"}".
-      - **VERIFY EXISTENCE:** Use your knowledge base. Many cities (like Bago, Kabankalan, etc.) *DO* have satellite offices for SSS, PhilHealth, and LTO.
-      - **IF YOU ARE SURE** a branch exists in ${location}, mention it explicitly.
-      - **IF YOU ARE UNSURE**, use safe phrasing: "Maaaring may satellite office sa ${location}, pero kung wala, ang sure na branch ay nasa [Nearest Major City]."
-      - **ALWAYS** point to the Google Maps link for confirmation: "I-check natin sa mapa kung open ang branch dito:"
+      - **DO NOT GUESS** if a specific branch exists or not.
+      - **DO NOT SAY** "Maaaring may..." (There might be) or "Parang wala..." (It seems there is none).
+      - **DIRECT ACTION:** Simply tell the user to check the Google Maps link below to find the exact location and see if a branch is open near them.
+      - **PHRASING:** "Para sigurado, i-check natin sa mapa kung saan ang pinakamalapit na branch sa'yo:"
 
       USER CONTEXT:
       Agency: ${agency}
@@ -118,9 +118,8 @@ export async function POST(req: Request) {
       (If applicable)
 
       **📍 Where to Go**
-      - Check the map for the exact location: ${mapsLink}
-      - (If you know the branch exists in ${location}, mention it here.)
-      - (If unsure, suggest the nearest major city as a backup.)
+      - **Click here to find the nearest branch:** ${mapsLink}
+      - (Simple instruction: "Check the map for operating hours and exact address.")
       - For official announcements, visit: [Official Website Link]
 
       **💡 Pro Tip**
