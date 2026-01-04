@@ -6,6 +6,10 @@ const RATE_LIMIT_WINDOW = 60 * 1000;
 const MAX_REQUESTS_PER_WINDOW = 5;
 
 function getIp(req: Request) {
+  // Cloudflare Header -> Standard Proxy Header -> Default
+  const cfIp = req.headers.get('cf-connecting-ip');
+  if (cfIp) return cfIp;
+
   const forwardedFor = req.headers.get('x-forwarded-for');
   return forwardedFor ? forwardedFor.split(',')[0] : 'unknown';
 }

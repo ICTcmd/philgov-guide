@@ -8,6 +8,10 @@ const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
 const MAX_REQUESTS_PER_WINDOW = 10; // 10 requests per minute per IP
 
 function getIp(req: Request) {
+  // Cloudflare Header -> Standard Proxy Header -> Default
+  const cfIp = req.headers.get('cf-connecting-ip');
+  if (cfIp) return cfIp;
+  
   const forwardedFor = req.headers.get('x-forwarded-for');
   return forwardedFor ? forwardedFor.split(',')[0] : 'unknown';
 }
@@ -87,10 +91,10 @@ export async function POST(req: Request) {
       
       CRITICAL REALITY CHECK (ANTI-HALLUCINATION):
       - The user is in: "${location || "Not specified"}".
-      - DO NOT INVENT OFFICES. For example, if the user is in "Bago City", DO NOT say "LTO Bago District Office" unless you are certain it exists.
-      - MOST towns do NOT have their own LTO/DFA/PSA offices. They are usually in the capital or major cities (e.g., Bacolod, Iloilo, Cebu, Manila).
-      - SAFE DEFAULT: If you are not 100% sure a specific "District Office" exists in "${location}", tell the user to go to the **Nearest Major Branch** instead.
-      - PHRASING: "Parang walang ${agency} sa ${location}. Ang pinakamalapit na branch ay baka nasa [Nearest Major City]."
+      - **VERIFY EXISTENCE:** Use your knowledge base. Many cities (like Bago, Kabankalan, etc.) *DO* have satellite offices for SSS, PhilHealth, and LTO.
+      - **IF YOU ARE SURE** a branch exists in ${location}, mention it explicitly.
+      - **IF YOU ARE UNSURE**, use safe phrasing: "Maaaring may satellite office sa ${location}, pero kung wala, ang sure na branch ay nasa [Nearest Major City]."
+      - **ALWAYS** point to the Google Maps link for confirmation: "I-check natin sa mapa kung open ang branch dito:"
 
       USER CONTEXT:
       Agency: ${agency}
@@ -114,8 +118,9 @@ export async function POST(req: Request) {
       (If applicable)
 
       **📍 Where to Go**
-      - Check for the nearest branch here: ${mapsLink}
-      - (If ${location} is a small town, explicitly suggest the nearest major city's branch)
+      - Check the map for the exact location: ${mapsLink}
+      - (If you know the branch exists in ${location}, mention it here.)
+      - (If unsure, suggest the nearest major city as a backup.)
       - For official announcements, visit: [Official Website Link]
 
       **💡 Pro Tip**
