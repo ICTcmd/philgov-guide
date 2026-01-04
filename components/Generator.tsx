@@ -581,7 +581,7 @@ export default function Generator() {
               (loading || !action) ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
-            {loading ? 'Searching...' : 'Get Requirements'}
+            {loading ? 'Searching...' : 'Get My Guide'}
           </button>
           
           {error && (
