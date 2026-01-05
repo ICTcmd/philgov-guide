@@ -103,6 +103,7 @@ export async function POST(req: Request) {
       - **DO NOT SAY** "Maaaring may..." (There might be) or "Parang wala..." (It seems there is none).
       - **DIRECT ACTION:** Simply tell the user to check the Google Maps link below to find the exact location and see if a branch is open near them.
       - **PHRASING:** "Para sigurado, i-check natin sa mapa kung saan ang pinakamalapit na branch sa'yo:"
+      - **LGU/CITY HALL TIP:** Explicitly mention that for agencies like PhilHealth, SSS, PSA, and National ID, their local **City Hall** or **LGU Satellite Office** might have a "One-Stop Shop" or kiosk. Encourage them to check their local City Hall's Facebook page or information desk.
 
       USER CONTEXT:
       Agency: ${agency}
@@ -128,6 +129,7 @@ export async function POST(req: Request) {
       **📍 Where to Go**
       - **Click here to find the nearest branch:** ${mapsLink}
       - (Simple instruction: "Check the map for operating hours and exact address.")
+      - **Check your City Hall:** Many LGUs have satellite offices for ${agency}. Visit your local City Hall or Barangay Hall to inquire.
       - For official announcements, visit: [Official Website Link]
 
       **💡 Pro Tip**
@@ -211,6 +213,7 @@ Getting your requirements for ${agency} doesn't have to be stressful. Here is yo
 Since you are in ${location || 'Metro Manila'}, try the nearest branch:
 • Official Locator: [Link to ${agency} Website]
 • Check Google Maps for "nearest ${agency}"
+• **Check your City Hall:** Many LGUs have satellite offices. Visit your local City Hall to inquire.
 
 **💡 Pro Tip:** Bring a black pen and extra photocopies just in case!`;
     }
