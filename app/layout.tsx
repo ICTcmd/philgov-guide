@@ -35,9 +35,6 @@ export const metadata: Metadata = {
     title: "JuanGuide - Your Friendly Gov Guide",
     description: "The fun, easy, and accurate guide to Philippine government services.",
   },
-  icons: {
-    icon: "/favicon.ico",
-  },
 };
 
 export default function RootLayout({
