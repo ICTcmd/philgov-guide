@@ -19,21 +19,21 @@ const fredoka = Fredoka({
 });
 
 export const metadata: Metadata = {
-  title: "JuanGuide - Your Friendly Gov Guide",
-  description: "The fun, easy, and accurate guide to Philippine government services. Walang hassle! Get requirements for SSS, PhilHealth, Pag-IBIG, LTO, and more.",
+  title: "JuanGuide: 🇵🇭 Gov Services Made Simple",
+  description: "Skip the confusion! Get instant, easy checklists for SSS, PhilHealth, DFA, LTO, and more. Walang hassle, pramis! 🚀",
   keywords: ["Philippines", "Government Services", "SSS", "PhilHealth", "Pag-IBIG", "LTO", "DFA", "Requirements", "Guide"],
   authors: [{ name: "JuanGuide Team" }],
   openGraph: {
-    title: "JuanGuide - Your Friendly Gov Guide",
-    description: "Simplified requirements for PH government services. No more confusion. Walang hassle!",
+    title: "JuanGuide: 🇵🇭 Gov Services Made Simple",
+    description: "Skip the confusion! Get instant, easy checklists for SSS, PhilHealth, DFA, LTO, and more. Walang hassle, pramis! 🚀",
     type: "website",
     locale: "en_PH",
     siteName: "JuanGuide",
   },
   twitter: {
     card: "summary_large_image",
-    title: "JuanGuide - Your Friendly Gov Guide",
-    description: "The fun, easy, and accurate guide to Philippine government services.",
+    title: "JuanGuide: 🇵🇭 Gov Services Made Simple",
+    description: "Skip the confusion! Get instant, easy checklists for SSS, PhilHealth, DFA, LTO, and more. Walang hassle, pramis! 🚀",
   },
 };
 
