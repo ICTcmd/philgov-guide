@@ -1,5 +1,15 @@
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
+import { z } from 'zod';
+
+// Zod Schema for Feedback Validation
+const FeedbackSchema = z.object({
+  name: z.string().trim().max(100).optional().default(""),
+  email: z.string().trim().max(200).optional().default(""),
+  message: z.string().trim().min(5, "Message is too short").max(1000),
+  rating: z.number().min(0).max(5).optional().default(0),
+  page: z.string().trim().max(200).optional().default(""),
+});
 
 const rateLimitMap = new Map<string, { count: number; startTime: number }>();
 const RATE_LIMIT_WINDOW = 60 * 1000;
@@ -39,23 +49,17 @@ export async function POST(req: Request) {
     }
 
     const body = await req.json();
-    let { name, email, message, rating, page } = body || {};
-
-    if (typeof name !== 'string') name = '';
-    if (typeof email !== 'string') email = '';
-    if (typeof message !== 'string') message = '';
-    if (typeof rating !== 'number') rating = 0;
-    if (typeof page !== 'string') page = '';
-
-    name = name.trim().slice(0, 100);
-    email = email.trim().slice(0, 200);
-    message = message.trim().slice(0, 1000);
-    page = page.trim().slice(0, 200);
-    rating = Math.min(5, Math.max(0, rating || 0));
-
-    if (!message || message.length < 5) {
-      return NextResponse.json({ error: 'Message is too short' }, { status: 400 });
+    
+    const parseResult = FeedbackSchema.safeParse(body);
+    
+    if (!parseResult.success) {
+      return NextResponse.json(
+        { error: parseResult.error.issues[0].message },
+        { status: 400 }
+      );
     }
+
+    const { name, email, message, rating, page } = parseResult.data;
 
     const webhookUrl = process.env.FEEDBACK_WEBHOOK_URL?.trim();
     const payload = {

@@ -1,5 +1,13 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { z } from 'zod';
+
+// Zod Schema for Input Validation
+const GenerateRequestSchema = z.object({
+  agency: z.string().trim().min(1, "Agency is required").max(100),
+  action: z.string().trim().min(1, "Action/Question is required").max(500),
+  location: z.string().trim().max(100).optional().default(""),
+});
 
 // Simple in-memory rate limiter (Note: This resets on server restart/serverless cold start)
 // For production, use Redis (e.g., Upstash)
@@ -55,25 +63,17 @@ export async function POST(req: Request) {
     const body = await req.json();
     console.log("API: Received request body:", body);
     
-    let { agency, action, location } = body;
+    // 2. Security: Input Validation & Sanitization with Zod
+    const parseResult = GenerateRequestSchema.safeParse(body);
 
-    // 2. Security: Input Validation & Sanitization
-    if (typeof agency !== 'string') agency = '';
-    if (typeof action !== 'string') action = '';
-    if (typeof location !== 'string') location = '';
-
-    // Truncate inputs to prevent token exhaustion/large payload attacks
-    agency = agency.trim().slice(0, 100);   // Max 100 chars
-    action = action.trim().slice(0, 500);   // Max 500 chars
-    location = location.trim().slice(0, 100); // Max 100 chars
-
-    if (!agency) {
-      return NextResponse.json({ error: 'Agency is required' }, { status: 400 });
+    if (!parseResult.success) {
+      return NextResponse.json(
+        { error: parseResult.error.issues[0].message },
+        { status: 400 }
+      );
     }
-    if (!action) {
-      return NextResponse.json({ error: 'Action/Question is required' }, { status: 400 });
-    }
-    // Location is optional
+
+    const { agency, action, location } = parseResult.data;
 
     const googleKey = process.env.GOOGLE_API_KEY?.trim();
     const openaiKey = process.env.OPENAI_API_KEY?.trim();
