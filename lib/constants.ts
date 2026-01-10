@@ -30,3 +30,15 @@ export const AGENCY_LINKS: Record<string, { homepage?: string; locator?: string;
   'PRC': { homepage: 'https://www.prc.gov.ph/', appointment: 'https://online.prc.gov.ph/' },
   'DSWD': { homepage: 'https://www.dswd.gov.ph/', locator: 'https://www.dswd.gov.ph/directory-of-officials/' },
 };
+
+export const LOADING_MESSAGES = [
+  "Consulting the bureaucracy...",
+  "Finding the shortest line...",
+  "Decoding government speak...",
+  "Looking for the rubber stamp...",
+  "Asking the guard on duty...",
+  "Checking the latest memo...",
+  "Computing the processing time...",
+  "Reviewing the checklist...",
+];
+

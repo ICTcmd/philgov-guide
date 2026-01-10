@@ -58,7 +58,7 @@ export default function ResultCard({ result, agency, action, isMock }: ResultCar
   };
 
   return (
-    <div className="w-full">
+    <div className="w-full animate-in fade-in zoom-in duration-500">
       <label className="block mb-2 text-sm font-bold text-gray-900 dark:text-white">
         Your Simple Guide
       </label>

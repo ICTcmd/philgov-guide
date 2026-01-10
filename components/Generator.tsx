@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from 'react';
-import { PRESETS } from '@/lib/constants';
+import { useEffect, useState, useRef } from 'react';
+import { PRESETS, LOADING_MESSAGES } from '@/lib/constants';
 import LocationPicker from './LocationPicker';
 import ResultCard from './ResultCard';
 import RecentSearches from './RecentSearches';
+import LoadingSkeleton from './LoadingSkeleton';
 
 export default function Generator() {
   const [agency, setAgency] = useState('DFA (Passport)');
@@ -17,6 +18,20 @@ export default function Generator() {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [detectionMethod, setDetectionMethod] = useState<null | 'gps' | 'ip' | 'manual' | 'map'>(null);
   const [recentSearches, setRecentSearches] = useState<Array<{ agency: string, action: string, date: number }>>([]);
+  const [loadingMsgIndex, setLoadingMsgIndex] = useState(0);
+  const resultRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (loading) {
+      interval = setInterval(() => {
+        setLoadingMsgIndex((prev) => (prev + 1) % LOADING_MESSAGES.length);
+      }, 2000);
+    } else {
+      setLoadingMsgIndex(0);
+    }
+    return () => clearInterval(interval);
+  }, [loading]);
 
   useEffect(() => {
     const saved = localStorage.getItem('recentSearches');
@@ -55,6 +70,12 @@ export default function Generator() {
     setResult("");
     setError(null);
     setIsMock(false);
+    
+    // Auto-scroll to result area start
+    setTimeout(() => {
+      resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+
     try {
       const response = await fetch('/api/generate', {
         method: 'POST',
@@ -173,11 +194,21 @@ export default function Generator() {
           <button
             onClick={handleGenerate}
             disabled={loading || !action}
-            className={`w-full text-white bg-violet-600 hover:bg-violet-700 focus:ring-4 focus:ring-violet-300 font-bold rounded-xl text-base px-5 py-3.5 mr-2 mb-2 dark:bg-violet-600 dark:hover:bg-violet-700 focus:outline-none dark:focus:ring-violet-800 shadow-lg hover:shadow-xl transition-all ${
-              (loading || !action) ? 'opacity-50 cursor-not-allowed' : ''
+            className={`w-full relative text-white bg-violet-600 hover:bg-violet-700 focus:ring-4 focus:ring-violet-300 font-bold rounded-xl text-base px-5 py-3.5 mr-2 mb-2 dark:bg-violet-600 dark:hover:bg-violet-700 focus:outline-none dark:focus:ring-violet-800 shadow-lg hover:shadow-xl transition-all overflow-hidden ${
+              (loading || !action) ? 'opacity-90 cursor-wait' : ''
             }`}
           >
-            {loading ? 'Searching...' : 'Get My Guide'}
+            {loading ? (
+              <div className="flex items-center justify-center gap-2">
+                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                <span className="animate-pulse">{LOADING_MESSAGES[loadingMsgIndex]}</span>
+              </div>
+            ) : (
+              'Get My Guide'
+            )}
           </button>
           
           {error && (
@@ -188,12 +219,18 @@ export default function Generator() {
         </div>
 
         {/* Output Section */}
-        <ResultCard 
-          result={result} 
-          agency={agency} 
-          action={action} 
-          isMock={isMock} 
-        />
+        <div ref={resultRef} className="scroll-mt-24 transition-all duration-500 ease-in-out">
+           {loading ? (
+             <LoadingSkeleton />
+           ) : (
+             <ResultCard 
+               result={result} 
+               agency={agency} 
+               action={action} 
+               isMock={isMock} 
+             />
+           )}
+        </div>
       </div>
     </section>
   );
