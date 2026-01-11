@@ -6,12 +6,15 @@ import LocationPicker from './LocationPicker';
 import ResultCard from './ResultCard';
 import RecentSearches from './RecentSearches';
 import LoadingSkeleton from './LoadingSkeleton';
+import { Image as ImageIcon, X } from 'lucide-react';
 
 export default function Generator() {
   const [agency, setAgency] = useState('DFA (Passport)');
   const [action, setAction] = useState('');
   const [location, setLocation] = useState('');
+  const [image, setImage] = useState<string | null>(null);
   const [result, setResult] = useState('');
+  const [followUps, setFollowUps] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isMock, setIsMock] = useState(false);
@@ -65,6 +68,21 @@ export default function Generator() {
     }
   }, [termsAccepted]);
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) { // 5MB limit
+        setError("Image size too large (max 5MB)");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImage(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleGenerate = async () => {
     setLoading(true);
     setResult("");
@@ -82,7 +100,7 @@ export default function Generator() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ agency, action, location }),
+        body: JSON.stringify({ agency, action, location, image }),
       });
       
       if (!response.ok) {
@@ -180,6 +198,32 @@ export default function Generator() {
             />
           </div>
 
+          <div>
+            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-white">
+              Upload Document/Form (Optional)
+            </label>
+            <div className="flex items-center gap-4">
+               {!image ? (
+                <label className="flex items-center gap-2 cursor-pointer px-4 py-2 border border-dashed border-gray-300 rounded-xl hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors">
+                  <ImageIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
+                  <span className="text-sm text-gray-500 dark:text-gray-400">Choose Image</span>
+                  <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                </label>
+               ) : (
+                <div className="relative group">
+                  <img src={image} alt="Uploaded" className="h-16 w-16 object-cover rounded-lg border border-gray-200 dark:border-gray-600" />
+                  <button 
+                    onClick={() => setImage(null)}
+                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 shadow-md hover:bg-red-600 transition-colors"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+               )}
+               {image && <span className="text-xs text-green-600 dark:text-green-400 font-medium">Image attached</span>}
+            </div>
+          </div>
+
           <LocationPicker
             location={location}
             setLocation={setLocation}
@@ -223,12 +267,34 @@ export default function Generator() {
            {loading ? (
              <LoadingSkeleton />
            ) : (
-             <ResultCard 
-               result={result} 
-               agency={agency} 
-               action={action} 
-               isMock={isMock} 
-             />
+              <div className="space-y-6">
+                <ResultCard 
+                  result={result} 
+                  agency={agency} 
+                  action={action} 
+                  isMock={isMock} 
+                />
+                
+                {followUps.length > 0 && (
+                  <div className="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg border border-violet-100 dark:border-gray-700">
+                     <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
+                       <span className="bg-violet-100 text-violet-700 p-1 rounded-lg">❓</span> 
+                       You might also ask...
+                     </h3>
+                     <div className="flex flex-wrap gap-3">
+                       {followUps.map((q, idx) => (
+                         <button
+                           key={idx}
+                           onClick={() => { setAction(q); handleGenerate(); }}
+                           className="text-left text-sm px-4 py-3 rounded-xl bg-gray-50 hover:bg-violet-50 text-gray-700 hover:text-violet-700 border border-gray-200 hover:border-violet-200 transition-all dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:border-gray-600"
+                         >
+                           {q}
+                         </button>
+                       ))}
+                     </div>
+                  </div>
+               )}
+             </div>
            )}
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
 import { z } from 'zod';
 import { rateLimit, getIp } from '@/lib/rate-limit';
 import { cacheService } from '@/lib/cache';
@@ -7,7 +7,7 @@ import { cacheService } from '@/lib/cache';
 /**
  * @file route.ts
  * @description API endpoint for generating government service guides using AI (Google Gemini/OpenAI).
- * Includes Rate Limiting, Caching, and Input Validation.
+ * Includes Rate Limiting, Caching, Input Validation, and Multi-modal support.
  */
 
 // Zod Schema for Input Validation
@@ -15,6 +15,7 @@ const GenerateRequestSchema = z.object({
   agency: z.string().trim().min(1, "Agency is required").max(100),
   action: z.string().trim().min(1, "Action/Question is required").max(500),
   location: z.string().trim().max(100).optional().default(""),
+  image: z.string().optional(), // Base64 image data
 });
 
 /**
@@ -55,16 +56,18 @@ export async function POST(req: Request) {
       );
     }
 
-    const { agency, action, location } = parseResult.data;
+    const { agency, action, location, image } = parseResult.data;
 
-    // 3. Performance: Caching
-    // Generate a unique cache key based on inputs
-    const cacheKey = cacheService.generateKey('generate', agency, action, location);
-    const cachedResult = cacheService.get<string>(cacheKey);
+    // 3. Performance: Caching (Skip if image is provided as it makes request unique)
+    let cacheKey = "";
+    if (!image) {
+      cacheKey = cacheService.generateKey('generate', agency, action, location);
+      const cachedResult = cacheService.get<string>(cacheKey);
 
-    if (cachedResult) {
-      console.log("API: Returning cached result for:", cacheKey);
-      return NextResponse.json({ result: cachedResult, cached: true });
+      if (cachedResult) {
+        console.log("API: Returning cached result for:", cacheKey);
+        return NextResponse.json({ result: cachedResult, cached: true });
+      }
     }
 
     const googleKey = process.env.GOOGLE_API_KEY?.trim();
@@ -74,6 +77,7 @@ export async function POST(req: Request) {
 
     const mapsLink = `https://www.google.com/maps/search/${encodeURIComponent(`nearest ${agency} to ${location || ""}`)}`;
     const currentYear = new Date().getFullYear();
+    
     const basePrompt = `You are a friendly and helpful expert on Philippine Government Services (PhilGov).
       
       INSTRUCTIONS:
@@ -83,19 +87,25 @@ export async function POST(req: Request) {
       - Do NOT use Markdown headers like ###. Use **Bold Text** for headers.
       - **URLS:** Always use valid URLs starting with https://. Double check for typos (e.g. avoid 'wwww').
       
+      ADVANCED REASONING (CHAIN-OF-THOUGHT):
+      - Before answering, think step-by-step:
+        1. Identify the user's core intent (e.g., "Renewal" vs "New Application").
+        2. Check for any location-specific nuances (User is in: "${location || "Not specified"}").
+        3. Recall the latest known requirements for ${currentYear}.
+        4. If an image is provided, analyze it for context (e.g., a form or ID) to provide specific advice.
+        5. Formulate the response in Taglish.
+
       ACCURACY & SAFETY PROTOCOLS:
       - **Current Year:** It is currently ${currentYear}. If requirements have changed recently, mention that.
-      - **Uncertainty:** If you are not 100% sure about a fee or specific requirement, say "approximate" or "check with the office" instead of guessing a number.
+      - **Uncertainty:** If you are not 100% sure about a fee or specific requirement, say "approximate" or "check with the office".
       - **Verification:** ALWAYS end your response by encouraging the user to verify with the official agency website or hotline.
       - **Official Links:** If you know the official website (e.g., www.sss.gov.ph), explicitly list it.
 
       CRITICAL LOCATION INSTRUCTION:
       - The user is in: "${location || "Not specified"}".
       - **DO NOT GUESS** if a specific branch exists or not.
-      - **DO NOT SAY** "Maaaring may..." (There might be) or "Parang wala..." (It seems there is none).
-      - **DIRECT ACTION:** Simply tell the user to check the Google Maps link below to find the exact location and see if a branch is open near them.
-      - **PHRASING:** "Para sigurado, i-check natin sa mapa kung saan ang pinakamalapit na branch sa'yo:"
-      - **LGU/CITY HALL TIP:** Explicitly mention that for agencies like PhilHealth, SSS, PSA, and National ID, their local **City Hall** or **LGU Satellite Office** might have a "One-Stop Shop" or kiosk. Encourage them to check their local City Hall's Facebook page or information desk.
+      - **DIRECT ACTION:** Simply tell the user to check the Google Maps link below.
+      - **LGU/CITY HALL TIP:** Explicitly mention that for agencies like PhilHealth, SSS, PSA, and National ID, their local **City Hall** or **LGU Satellite Office** might have a "One-Stop Shop".
 
       USER CONTEXT:
       Agency: ${agency}
@@ -104,6 +114,7 @@ export async function POST(req: Request) {
       
       USER REQUEST/ACTION:
       "${action}"
+      ${image ? "[IMAGE ATTACHED FOR CONTEXT]" : ""}
 
       RESPONSE FORMAT:
       **👋 Hello!**
@@ -120,24 +131,54 @@ export async function POST(req: Request) {
 
       **📍 Where to Go**
       - **Click here to find the nearest branch:** ${mapsLink}
-      - (Simple instruction: "Check the map for operating hours and exact address.")
-      - **Check your City Hall:** Many LGUs have satellite offices for ${agency}. Visit your local City Hall or Barangay Hall to inquire.
+      - **Check your City Hall:** Visit your local City Hall or Barangay Hall.
       - For official announcements, visit: [Official Website Link]
 
       **💡 Pro Tip**
-      (Helpful advice)`;
+      (Helpful advice)
+      
+      **❓ Follow-up Questions:**
+      (Provide 3 relevant follow-up questions the user might ask next, numbered 1-3)
+      1. [Question 1]
+      2. [Question 2]
+      3. [Question 3]`;
 
     async function tryGoogle(): Promise<string> {
       if (!googleKey) throw new Error("NO_GOOGLE_KEY");
       const genAI = new GoogleGenerativeAI(googleKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash"});
-      const result = await model.generateContent(basePrompt);
+      const model = genAI.getGenerativeModel({ 
+        model: "gemini-2.5-flash",
+        safetySettings: [
+          { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+          { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+          { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+          { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+        ]
+      });
+
+      const parts: any[] = [basePrompt];
+      if (image) {
+        // Image format: "data:image/jpeg;base64,..."
+        const base64Data = image.split(',')[1];
+        const mimeType = image.split(',')[0].match(/:(.*?);/)?.[1] || 'image/jpeg';
+        parts.push({
+          inlineData: {
+            data: base64Data,
+            mimeType: mimeType
+          }
+        });
+      }
+
+      const result = await model.generateContent(parts);
       const response = await result.response;
       return response.text();
     }
 
     async function tryOpenAI(): Promise<string> {
       if (!openaiKey) throw new Error("NO_OPENAI_KEY");
+      // OpenAI Fallback does not support image in this implementation yet
+      if (image) throw new Error("OPENAI_NO_IMAGE_SUPPORT");
+      
       const resp = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
