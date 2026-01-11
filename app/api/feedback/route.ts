@@ -1,6 +1,14 @@
 import { NextResponse } from 'next/server';
 import { google } from 'googleapis';
 import { z } from 'zod';
+import { rateLimit, getIp } from '@/lib/rate-limit';
+
+/**
+ * @file route.ts
+ * @description API endpoint for submitting user feedback.
+ * Supports saving to Google Sheets and sending to a Webhook.
+ * Protected by Rate Limiting and Zod Validation.
+ */
 
 // Zod Schema for Feedback Validation
 const FeedbackSchema = z.object({
@@ -11,41 +19,28 @@ const FeedbackSchema = z.object({
   page: z.string().trim().max(200).optional().default(""),
 });
 
-const rateLimitMap = new Map<string, { count: number; startTime: number }>();
-const RATE_LIMIT_WINDOW = 60 * 1000;
-const MAX_REQUESTS_PER_WINDOW = 5;
-
-function getIp(req: Request) {
-  // Cloudflare Header -> Standard Proxy Header -> Default
-  const cfIp = req.headers.get('cf-connecting-ip');
-  if (cfIp) return cfIp;
-
-  const forwardedFor = req.headers.get('x-forwarded-for');
-  return forwardedFor ? forwardedFor.split(',')[0] : 'unknown';
-}
-
-function checkRateLimit(ip: string) {
-  if (ip === 'unknown') return true;
-  const now = Date.now();
-  const record = rateLimitMap.get(ip);
-  if (!record) {
-    rateLimitMap.set(ip, { count: 1, startTime: now });
-    return true;
-  }
-  if (now - record.startTime > RATE_LIMIT_WINDOW) {
-    rateLimitMap.set(ip, { count: 1, startTime: now });
-    return true;
-  }
-  if (record.count >= MAX_REQUESTS_PER_WINDOW) return false;
-  record.count++;
-  return true;
-}
-
+/**
+ * POST handler for feedback submission
+ * @param {Request} req - The incoming request object
+ * @returns {Promise<NextResponse>} JSON response
+ */
 export async function POST(req: Request) {
   try {
     const ip = getIp(req);
-    if (!checkRateLimit(ip)) {
-      return NextResponse.json({ error: 'Too many requests' }, { status: 429 });
+    const rateLimitResult = rateLimit(ip, 'feedback-api', { windowMs: 60000, maxRequests: 5 });
+
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Too many requests. Please try again in a minute.' }, 
+        { 
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+            'X-RateLimit-Reset': rateLimitResult.reset.toString()
+          }
+        }
+      );
     }
 
     const body = await req.json();
@@ -61,7 +56,6 @@ export async function POST(req: Request) {
 
     const { name, email, message, rating, page } = parseResult.data;
 
-    const webhookUrl = process.env.FEEDBACK_WEBHOOK_URL?.trim();
     const payload = {
       type: 'feedback',
       ip,
@@ -74,11 +68,13 @@ export async function POST(req: Request) {
       timestamp: new Date().toISOString(),
     };
 
+    const webhookUrl = process.env.FEEDBACK_WEBHOOK_URL?.trim();
     const sheetsId = process.env.GOOGLE_SHEETS_ID?.trim();
     const svcEmail = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL?.trim();
     const svcKeyRaw = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY;
     const svcKey = svcKeyRaw ? svcKeyRaw.replace(/\\n/g, '\n') : undefined;
 
+    // Save to Google Sheets if configured
     if (sheetsId && svcEmail && svcKey) {
       try {
         const auth = new google.auth.JWT({
@@ -99,16 +95,17 @@ export async function POST(req: Request) {
         ]];
         await sheets.spreadsheets.values.append({
           spreadsheetId: sheetsId,
-          range: 'A1',
+          range: 'Feedback!A:H', // Assumes a sheet named "Feedback"
           valueInputOption: 'USER_ENTERED',
-          insertDataOption: 'INSERT_ROWS',
           requestBody: { values },
         });
       } catch (err) {
-        console.error('Feedback sheets error', err);
+        console.error('Error saving to Google Sheets:', err);
+        // Don't fail the request if Sheets fails, just log it
       }
     }
 
+    // Send to Webhook if configured (e.g., Discord/Slack/Zapier)
     if (webhookUrl) {
       try {
         await fetch(webhookUrl, {
@@ -117,14 +114,13 @@ export async function POST(req: Request) {
           body: JSON.stringify(payload),
         });
       } catch (err) {
-        console.error('Feedback webhook error', err);
+        console.error('Error sending to webhook:', err);
       }
-    } else {
-      console.log('Feedback received', payload);
     }
 
-    return NextResponse.json({ ok: true });
-  } catch (error) {
-    return NextResponse.json({ error: 'Unexpected error' }, { status: 500 });
+    return NextResponse.json({ success: true, message: 'Feedback received' });
+  } catch (error: unknown) {
+    console.error('API Error submitting feedback:', error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

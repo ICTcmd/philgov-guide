@@ -1,6 +1,14 @@
 import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { z } from 'zod';
+import { rateLimit, getIp } from '@/lib/rate-limit';
+import { cacheService } from '@/lib/cache';
+
+/**
+ * @file route.ts
+ * @description API endpoint for generating government service guides using AI (Google Gemini/OpenAI).
+ * Includes Rate Limiting, Caching, and Input Validation.
+ */
 
 // Zod Schema for Input Validation
 const GenerateRequestSchema = z.object({
@@ -9,54 +17,28 @@ const GenerateRequestSchema = z.object({
   location: z.string().trim().max(100).optional().default(""),
 });
 
-// Simple in-memory rate limiter (Note: This resets on server restart/serverless cold start)
-// For production, use Redis (e.g., Upstash)
-const rateLimitMap = new Map();
-const RATE_LIMIT_WINDOW = 60 * 1000; // 1 minute
-const MAX_REQUESTS_PER_WINDOW = 10; // 10 requests per minute per IP
-
-function getIp(req: Request) {
-  // Cloudflare Header -> Standard Proxy Header -> Default
-  const cfIp = req.headers.get('cf-connecting-ip');
-  if (cfIp) return cfIp;
-  
-  const forwardedFor = req.headers.get('x-forwarded-for');
-  return forwardedFor ? forwardedFor.split(',')[0] : 'unknown';
-}
-
-function checkRateLimit(ip: string) {
-  if (ip === 'unknown') return true; // Skip if IP unknown (dev env mostly)
-  
-  const now = Date.now();
-  const record = rateLimitMap.get(ip);
-
-  if (!record) {
-    rateLimitMap.set(ip, { count: 1, startTime: now });
-    return true;
-  }
-
-  if (now - record.startTime > RATE_LIMIT_WINDOW) {
-    // Reset window
-    rateLimitMap.set(ip, { count: 1, startTime: now });
-    return true;
-  }
-
-  if (record.count >= MAX_REQUESTS_PER_WINDOW) {
-    return false;
-  }
-
-  record.count++;
-  return true;
-}
-
+/**
+ * POST handler for generating guides
+ * @param {Request} req - The incoming request object
+ * @returns {Promise<NextResponse>} JSON response with generated guide or error
+ */
 export async function POST(req: Request) {
   try {
     // 1. Security: Rate Limiting
     const ip = getIp(req);
-    if (!checkRateLimit(ip)) {
+    const rateLimitResult = rateLimit(ip, 'generate-api', { windowMs: 60000, maxRequests: 10 });
+    
+    if (!rateLimitResult.success) {
       return NextResponse.json(
         { error: 'Too many requests. Please try again in a minute.' },
-        { status: 429 }
+        { 
+          status: 429,
+          headers: {
+            'X-RateLimit-Limit': rateLimitResult.limit.toString(),
+            'X-RateLimit-Remaining': rateLimitResult.remaining.toString(),
+            'X-RateLimit-Reset': rateLimitResult.reset.toString()
+          }
+        }
       );
     }
 
@@ -74,6 +56,16 @@ export async function POST(req: Request) {
     }
 
     const { agency, action, location } = parseResult.data;
+
+    // 3. Performance: Caching
+    // Generate a unique cache key based on inputs
+    const cacheKey = cacheService.generateKey('generate', agency, action, location);
+    const cachedResult = cacheService.get<string>(cacheKey);
+
+    if (cachedResult) {
+      console.log("API: Returning cached result for:", cacheKey);
+      return NextResponse.json({ result: cachedResult, cached: true });
+    }
 
     const googleKey = process.env.GOOGLE_API_KEY?.trim();
     const openaiKey = process.env.OPENAI_API_KEY?.trim();
@@ -174,11 +166,18 @@ export async function POST(req: Request) {
     if (googleKey || openaiKey) {
       try {
         generatedContent = googleKey ? await tryGoogle() : await tryOpenAI();
+        // 4. Performance: Save to Cache (if real API used)
+        if (generatedContent) {
+           cacheService.set(cacheKey, generatedContent);
+        }
       } catch (err) {
         console.warn("Primary provider failed, attempting fallback:", err);
         if (googleKey && openaiKey) {
           try {
             generatedContent = await tryOpenAI();
+            if (generatedContent) {
+               cacheService.set(cacheKey, generatedContent);
+            }
           } catch (err2) {
             console.error("Fallback provider failed:", err2);
           }
