@@ -107,7 +107,7 @@ export default function Generator() {
   };
 
   return (
-    <section id="generator" className="bg-white dark:bg-gray-900 py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
+    <section id="generator" className="bg-transparent dark:bg-transparent py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
       <div className="max-w-screen-md mx-auto text-center mb-8">
         <h2 className="mb-4 text-5xl md:text-6xl tracking-tight font-extrabold font-display text-gray-900 dark:text-white">
           JuanGuide

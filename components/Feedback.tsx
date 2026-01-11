@@ -42,7 +42,7 @@ export default function Feedback() {
   }
 
   return (
-    <section id="feedback" className="w-full bg-white dark:bg-gray-900">
+    <section id="feedback" className="w-full bg-transparent dark:bg-transparent">
       <div className="py-10 px-4 mx-auto max-w-screen-xl">
         <h2 className="mb-4 text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
           Feedback
