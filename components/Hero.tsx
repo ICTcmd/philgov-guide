@@ -1,8 +1,12 @@
 import Link from 'next/link';
+import { ThemeToggle } from './ThemeToggle';
 
 export default function Hero() {
   return (
-    <section className="bg-gradient-to-b from-violet-50 to-slate-50 dark:from-slate-950 dark:to-slate-950">
+    <section className="bg-gradient-to-b from-violet-50 to-slate-50 dark:from-slate-950 dark:to-slate-950 relative">
+      <div className="absolute top-4 right-4 z-10">
+        <ThemeToggle />
+      </div>
       <div className="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-24 lg:px-12">
         <h1 className="mb-4 text-4xl font-extrabold font-display tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl dark:text-white">
           Government Requirements Made <span className="text-violet-600 dark:text-violet-400">Easy</span>
