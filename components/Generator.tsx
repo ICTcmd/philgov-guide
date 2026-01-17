@@ -84,6 +84,24 @@ export default function Generator() {
   };
 
   const handleGenerate = async () => {
+    const trimmedAction = action.trim();
+    if (!trimmedAction) {
+      setError("Please tell us what you need to do (e.g. \"Renew passport\").");
+      return;
+    }
+
+    if (!termsAccepted) {
+      setError("Please accept the Terms & Conditions before generating a guide.");
+      return;
+    }
+
+    const payload = {
+      agency,
+      action: trimmedAction,
+      location,
+      image,
+    };
+
     setLoading(true);
     setResult("");
     setError(null);
@@ -100,22 +118,30 @@ export default function Generator() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ agency, action, location, image }),
+        body: JSON.stringify(payload),
       });
       
+      let data: any = null;
+      try {
+        data = await response.json();
+      } catch (e) {
+        console.error('Failed to parse JSON from /api/generate', e);
+      }
+
       if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
+        const message = data?.error || `Server error (status ${response.status})`;
+        setError(message);
+        return;
       }
 
-      const data = await response.json();
-
-      if (data.error) {
+      if (data?.error) {
         setError(data.error);
-      } else {
-        setResult(data.result);
-        addToRecent(agency, action);
-        setIsMock(typeof data.result === 'string' && data.result.startsWith('[MOCK MODE'));
+        return;
       }
+
+      setResult(data.result);
+      addToRecent(agency, trimmedAction);
+      setIsMock(typeof data.result === 'string' && data.result.startsWith('[MOCK MODE'));
     } catch (error) {
       console.error('Error generating content:', error);
       setError("Something went wrong. Please try again.");
@@ -237,9 +263,9 @@ export default function Generator() {
 
           <button
             onClick={handleGenerate}
-            disabled={loading || !action}
+            disabled={loading || !action.trim()}
             className={`w-full relative text-white bg-violet-600 hover:bg-violet-700 focus:ring-4 focus:ring-violet-300 font-bold rounded-xl text-base px-5 py-3.5 mr-2 mb-2 dark:bg-violet-600 dark:hover:bg-violet-700 focus:outline-none dark:focus:ring-violet-800 shadow-lg hover:shadow-xl transition-all overflow-hidden ${
-              (loading || !action) ? 'opacity-90 cursor-wait' : ''
+              (loading || !action.trim()) ? 'opacity-90 cursor-wait' : ''
             }`}
           >
             {loading ? (

@@ -15,7 +15,7 @@ const GenerateRequestSchema = z.object({
   agency: z.string().trim().min(1, "Agency is required").max(100),
   action: z.string().trim().min(1, "Action/Question is required").max(500),
   location: z.string().trim().max(100).optional().default(""),
-  image: z.string().optional(), // Base64 image data
+  image: z.string().optional().nullable(), // Base64 image data
 });
 
 /**
