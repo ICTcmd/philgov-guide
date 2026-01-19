@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from 'react';
+import Image from 'next/image';
 import { PRESETS, LOADING_MESSAGES } from '@/lib/constants';
 import LocationPicker from './LocationPicker';
 import ResultCard from './ResultCard';
@@ -8,13 +9,18 @@ import RecentSearches from './RecentSearches';
 import LoadingSkeleton from './LoadingSkeleton';
 import { Image as ImageIcon, X } from 'lucide-react';
 
+type GenerateResponse = {
+  result?: string;
+  error?: string;
+};
+
 export default function Generator() {
   const [agency, setAgency] = useState('DFA (Passport)');
   const [action, setAction] = useState('');
   const [location, setLocation] = useState('');
   const [image, setImage] = useState<string | null>(null);
   const [result, setResult] = useState('');
-  const [followUps, setFollowUps] = useState<string[]>([]);
+  const [followUps] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isMock, setIsMock] = useState(false);
@@ -121,7 +127,7 @@ export default function Generator() {
         body: JSON.stringify(payload),
       });
       
-      let data: any = null;
+      let data: GenerateResponse | null = null;
       try {
         data = await response.json();
       } catch (e) {
@@ -237,7 +243,13 @@ export default function Generator() {
                 </label>
                ) : (
                 <div className="relative group">
-                  <img src={image} alt="Uploaded" className="h-16 w-16 object-cover rounded-lg border border-gray-200 dark:border-gray-600" />
+                  <Image
+                    src={image}
+                    alt="Uploaded"
+                    width={64}
+                    height={64}
+                    className="h-16 w-16 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
+                  />
                   <button 
                     onClick={() => setImage(null)}
                     className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 shadow-md hover:bg-red-600 transition-colors"

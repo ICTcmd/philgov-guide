@@ -3,10 +3,14 @@ type CacheEntry<T> = {
   expiry: number;
 };
 
-const cache = new Map<string, CacheEntry<any>>();
-
-// Default TTL: 1 hour (since gov requirements don't change often)
-const DEFAULT_TTL = 60 * 60 * 1000; 
+const cache = new Map<string, CacheEntry<unknown>>();
+const DEFAULT_TTL_MS = (() => {
+  const raw = process.env.CACHE_TTL_MS;
+  if (!raw) return 60 * 60 * 1000;
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed <= 0) return 60 * 60 * 1000;
+  return parsed;
+})();
 
 export const cacheService = {
   get: <T>(key: string): T | null => {
@@ -21,17 +25,14 @@ export const cacheService = {
     return entry.data;
   },
 
-  set: <T>(key: string, data: T, ttl: number = DEFAULT_TTL): void => {
+  set: <T>(key: string, data: T, ttl: number = DEFAULT_TTL_MS): void => {
     // Basic eviction strategy: if cache gets too big, clear it (simple for starter)
     if (cache.size > 1000) {
       const keysToDelete = Array.from(cache.keys()).slice(0, 200);
       keysToDelete.forEach(k => cache.delete(k));
     }
 
-    cache.set(key, {
-      data,
-      expiry: Date.now() + ttl,
-    });
+    cache.set(key, { data, expiry: Date.now() + ttl });
   },
 
   generateKey: (...args: (string | number | undefined | null)[]): string => {

@@ -5,7 +5,23 @@ type RateLimitConfig = {
 
 const trackers = new Map<string, Map<string, { count: number; startTime: number }>>();
 
-export function rateLimit(ip: string, endpoint: string, config: RateLimitConfig = { windowMs: 60000, maxRequests: 10 }) {
+const DEFAULT_WINDOW_MS = (() => {
+  const raw = process.env.RATE_LIMIT_WINDOW_MS;
+  if (!raw) return 60000;
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed <= 0) return 60000;
+  return parsed;
+})();
+
+const DEFAULT_MAX_REQUESTS = (() => {
+  const raw = process.env.RATE_LIMIT_MAX_REQUESTS;
+  if (!raw) return 10;
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed) || parsed <= 0) return 10;
+  return parsed;
+})();
+
+export function rateLimit(ip: string, endpoint: string, config: RateLimitConfig = { windowMs: DEFAULT_WINDOW_MS, maxRequests: DEFAULT_MAX_REQUESTS }) {
   if (ip === 'unknown' || process.env.NODE_ENV === 'development') {
     // Optional: looser limits in dev
     // return true; 

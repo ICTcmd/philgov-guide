@@ -156,7 +156,7 @@ export async function POST(req: Request) {
         ]
       });
 
-      const parts: any[] = [basePrompt];
+      const parts: Array<string | { inlineData: { data: string; mimeType: string } }> = [basePrompt];
       if (image) {
         // Image format: "data:image/jpeg;base64,..."
         const base64Data = image.split(',')[1];
