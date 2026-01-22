@@ -7,7 +7,7 @@ import LocationPicker from './LocationPicker';
 import ResultCard from './ResultCard';
 import RecentSearches from './RecentSearches';
 import LoadingSkeleton from './LoadingSkeleton';
-import { Image as ImageIcon, X } from 'lucide-react';
+import { Image as ImageIcon, X, Share2, Mic } from 'lucide-react';
 
 type GenerateResponse = {
   result?: string;
@@ -158,7 +158,10 @@ export default function Generator() {
 
   return (
     <section id="generator" className="bg-transparent dark:bg-transparent py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
-      <div className="max-w-screen-md mx-auto text-center mb-8">
+      <div className="max-w-screen-md mx-auto text-center mb-8 relative">
+        <div className="absolute top-0 right-0 hidden md:block">
+           <ThemeToggle />
+        </div>
         <h2 className="mb-4 text-5xl md:text-6xl tracking-tight font-extrabold font-display text-gray-900 dark:text-white">
           JuanGuide
         </h2>
@@ -170,7 +173,8 @@ export default function Generator() {
       <div className="flex flex-col gap-8 max-w-4xl mx-auto">
         {/* Input Section */}
         <div className="w-full space-y-5 bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-xl border border-violet-100 dark:border-gray-700">
-          <div className="flex flex-wrap gap-2 mb-2">
+          <div className="flex flex-wrap gap-2 mb-2 justify-between items-center">
+            <div className="flex flex-wrap gap-2">
             {PRESETS.map((p) => (
               <button
                 key={p.label}
@@ -180,6 +184,15 @@ export default function Generator() {
                 {p.label}
               </button>
             ))}
+            </div>
+            <button
+              onClick={handleShare}
+              className="text-xs flex items-center gap-1 text-violet-600 hover:text-violet-800 font-medium px-2 py-1 rounded-lg hover:bg-violet-50 transition-colors"
+              title="Share this search"
+            >
+              <Share2 className="w-4 h-4" />
+              <span className="hidden sm:inline">Share Link</span>
+            </button>
           </div>
 
           <RecentSearches 
@@ -191,7 +204,8 @@ export default function Generator() {
             <label htmlFor="agency-select" className="block mb-2 text-sm font-bold text-gray-700 dark:text-white">
               Select Agency
             </label>
-            <div className="relative">
+            <div className="flex gap-2">
+            <div className="relative flex-1">
               <select
                 id="agency-select"
                 value={agency}
@@ -214,20 +228,46 @@ export default function Generator() {
                 <option value="DSWD">DSWD</option>
               </select>
             </div>
+            <div className="w-1/3">
+               <select
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-violet-500 focus:border-violet-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
+               >
+                 <option value="taglish">Taglish 🇵🇭</option>
+                 <option value="english">English 🇺🇸</option>
+                 <option value="tagalog">Tagalog (Pure)</option>
+                 <option value="cebuano">Cebuano (Bisaya)</option>
+               </select>
+            </div>
+            </div>
           </div>
 
           <div>
             <label htmlFor="action-input" className="block mb-2 text-sm font-bold text-gray-700 dark:text-white">
               What do you need to do?
             </label>
-            <input
-              id="action-input"
-              type="text"
-              value={action}
-              onChange={(e) => setAction(e.target.value)}
-              className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-violet-500 focus:border-violet-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
-              placeholder="e.g. Renew passport, Apply for TIN, Lost ID"
-            />
+            <div className="relative">
+              <input
+                id="action-input"
+                type="text"
+                value={action}
+                onChange={(e) => setAction(e.target.value)}
+                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-violet-500 focus:border-violet-500 block w-full p-3 pr-12 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
+                placeholder="e.g. Renew passport, Apply for TIN, Lost ID"
+              />
+              <button
+                onClick={handleVoiceInput}
+                className={`absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-full transition-all ${
+                  isListening 
+                    ? 'bg-red-100 text-red-600 animate-pulse' 
+                    : 'text-gray-400 hover:text-violet-600 hover:bg-gray-100'
+                }`}
+                title="Speak to type"
+              >
+                <Mic className="w-5 h-5" />
+              </button>
+            </div>
           </div>
 
           <div>
