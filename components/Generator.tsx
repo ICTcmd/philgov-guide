@@ -376,7 +376,7 @@ export default function Generator() {
                        {followUps.map((q, idx) => (
                          <button
                            key={idx}
-                           onClick={() => { setAction(q); handleGenerate(); }}
+                           onClick={() => { setAction(q); handleGenerate(q); }}
                            className="text-left text-sm px-4 py-3 rounded-xl bg-gray-50 hover:bg-violet-50 text-gray-700 hover:text-violet-700 border border-gray-200 hover:border-violet-200 transition-all dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:border-gray-600"
                          >
                            {q}
