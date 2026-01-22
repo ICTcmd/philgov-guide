@@ -148,7 +148,7 @@ export async function POST(req: Request) {
       • **Google Maps:** ${mapsLink}
       • **Pro Tip:** Check your City Hall or nearest Mall Government Satellite Office.
 
-      **💡 JuanGuide Pro Tip**
+      **💡 BAGO APP Pro Tip**
       [A helpful insider tip, e.g., "Best time to go is Tuesday morning", "Bring a black pen", "Dress code reminder"]
       
       **❓ Follow-up Questions:**

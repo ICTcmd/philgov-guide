@@ -15,7 +15,7 @@ export default function Hero() {
           No more confusion. Get clear, step-by-step guides for SSS, PhilHealth, DFA, and more in seconds. Walang hassle!
         </p>
         <p className="mb-8 text-sm text-gray-500 sm:px-16 xl:px-48 dark:text-gray-400 italic">
-          Disclaimer: JuanGuide is a guide only. We do not process documents or applications directly.
+          Disclaimer: BAGO APP is a guide only. We do not process documents or applications directly.
         </p>
         <div className="flex flex-col mb-8 lg:mb-16 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
           <Link href="#generator" className="inline-flex justify-center items-center py-4 px-6 text-base font-bold text-center text-white rounded-2xl bg-violet-600 hover:bg-violet-700 focus:ring-4 focus:ring-violet-300 dark:focus:ring-violet-900 shadow-lg hover:shadow-xl transition-all">

@@ -19,9 +19,11 @@ export default function Generator() {
   const [agency, setAgency] = useState('DFA (Passport)');
   const [action, setAction] = useState('');
   const [location, setLocation] = useState('');
+  const [language, setLanguage] = useState('taglish');
+  const [isListening, setIsListening] = useState(false);
   const [image, setImage] = useState<string | null>(null);
   const [result, setResult] = useState('');
-  const [followUps] = useState<string[]>([]);
+  const [followUps, setFollowUps] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isMock, setIsMock] = useState(false);
@@ -90,8 +92,47 @@ export default function Generator() {
     }
   };
 
-  const handleGenerate = async () => {
-    const trimmedAction = action.trim();
+  const handleVoiceInput = () => {
+    if (typeof window !== 'undefined' && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'en-PH';
+      recognition.interimResults = false;
+      recognition.maxAlternatives = 1;
+
+      recognition.onstart = () => setIsListening(true);
+      recognition.onend = () => setIsListening(false);
+      recognition.onresult = (event: any) => {
+        const transcript = event.results[0][0].transcript;
+        setAction(transcript);
+      };
+      
+      recognition.start();
+    } else {
+      alert("Voice input is not supported in this browser.");
+    }
+  };
+
+  const handleShare = async () => {
+    if (typeof navigator !== 'undefined' && navigator.share) {
+      try {
+        await navigator.share({
+          title: 'BAGO APP',
+          text: `Check out this guide for ${agency} - ${action}`,
+          url: window.location.href,
+        });
+      } catch (err) {
+        console.error('Error sharing:', err);
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      // Optional: show toast or alert
+    }
+  };
+
+  const handleGenerate = async (overrideAction?: string) => {
+    const currentAction = typeof overrideAction === 'string' ? overrideAction : action;
+    const trimmedAction = currentAction.trim();
     if (!trimmedAction) {
       setError("Please tell us what you need to do (e.g. \"Renew passport\").");
       return;
@@ -106,6 +147,7 @@ export default function Generator() {
       agency,
       action: trimmedAction,
       location,
+      language,
       image,
     };
 
@@ -143,6 +185,11 @@ export default function Generator() {
 
       if (data?.error) {
         setError(data.error);
+        return;
+      }
+
+      if (!data || !data.result) {
+        setError("Invalid response from server");
         return;
       }
 
@@ -349,7 +396,7 @@ export default function Generator() {
           />
 
           <button
-            onClick={handleGenerate}
+            onClick={() => handleGenerate()}
             disabled={loading || !action.trim()}
             className={`w-full relative text-white bg-violet-600 hover:bg-violet-700 focus:ring-4 focus:ring-violet-300 font-bold rounded-xl text-base px-5 py-3.5 mr-2 mb-2 dark:bg-violet-600 dark:hover:bg-violet-700 focus:outline-none dark:focus:ring-violet-800 shadow-lg hover:shadow-xl transition-all overflow-hidden ${
               (loading || !action.trim()) ? 'opacity-90 cursor-wait' : ''

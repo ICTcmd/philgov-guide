@@ -4,7 +4,7 @@ import { ImageResponse } from 'next/og'
 export const runtime = 'edge'
 
 // Image metadata
-export const alt = 'JuanGuide - Philippine Government Services Guide'
+export const alt = 'BAGO APP - Philippine Government Services Guide'
 export const size = {
   width: 1200,
   height: 630,

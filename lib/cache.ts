@@ -22,7 +22,7 @@ export const cacheService = {
       return null;
     }
 
-    return entry.data;
+    return entry.data as T;
   },
 
   set: <T>(key: string, data: T, ttl: number = DEFAULT_TTL_MS): void => {
