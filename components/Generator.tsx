@@ -146,18 +146,40 @@ export default function Generator() {
         return;
       }
 
-      setResult(data.result);
-      
-      // Parse follow-ups if present
-      const followUpMatch = data.result.match(/<<<FOLLOWUPS>>>([\s\S]*?)<<<END_FOLLOWUPS>>>/);
+      let finalResult = data.result;
+      let extractedQuestions: string[] = [];
+
+      // 1. Primary: Look for hidden <<<FOLLOWUPS>>> block
+      const followUpMatch = finalResult.match(/<<<FOLLOWUPS>>>([\s\S]*?)<<<END_FOLLOWUPS>>>/);
       if (followUpMatch) {
-        const rawFollowUps = followUpMatch[1].trim().split('\n').filter(q => q.trim().length > 0);
-        setFollowUps(rawFollowUps);
+        extractedQuestions = followUpMatch[1].trim().split('\n').filter(q => q.trim().length > 0);
         // Remove the follow-up block from the displayed result
-        setResult(data.result.replace(/<<<FOLLOWUPS>>>[\s\S]*?<<<END_FOLLOWUPS>>>/, '').trim());
-      } else {
-        setFollowUps([]);
+        finalResult = finalResult.replace(/<<<FOLLOWUPS>>>[\s\S]*?<<<END_FOLLOWUPS>>>/, '').trim();
       }
+
+      // 2. Fallback: Look for "Follow-up Questions" header (Visible Text)
+      // Matches **❓ Follow-up Questions:** or similar, and captures everything after it
+      if (extractedQuestions.length === 0) {
+        // Updated regex to support Emoji variations (❓, ?, ❓) and loose formatting
+        const fallbackMatch = finalResult.match(/(?:[\?❓].*Follow-up Questions|Questions|Tanong|Mga Tanong).*?(:)?([\s\S]*)$/i);
+        if (fallbackMatch) {
+           const rawText = fallbackMatch[2];
+           // Extract lines that look like questions (start with number or bullet)
+           const questions = rawText
+             .split('\n')
+             .map(line => line.replace(/^\d+\.|•|-/, '').trim())
+             .filter(line => line.length > 5 && line.includes('?'));
+           
+           if (questions.length > 0) {
+             extractedQuestions = questions;
+             // Remove the whole section from the result to avoid duplication
+             finalResult = finalResult.replace(fallbackMatch[0], '');
+           }
+        }
+      }
+
+      setResult(finalResult);
+      setFollowUps(extractedQuestions);
 
       addToRecent(agency, trimmedAction);
       setIsMock(typeof data.result === 'string' && data.result.startsWith('[MOCK MODE'));

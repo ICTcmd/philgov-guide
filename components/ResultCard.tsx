@@ -10,7 +10,11 @@ interface ResultCardProps {
 
 export default function ResultCard({ result, agency, action, isMock }: ResultCardProps) {
   const linkify = (text: string) => {
-    const parts = text.split(/\n/);
+    // Safety Filter: Hide the "Follow-up Questions" section from the visual card if it leaks through
+    // This ensures we don't show the "broken" text version to the user
+    const displaySafeText = text.replace(/(?:[\?❓].*Follow-up Questions|Questions|Tanong|Mga Tanong).*?(:)?([\s\S]*)$/i, '');
+
+    const parts = displaySafeText.split(/\n/);
     return parts.map((line, i) => {
       const tokens = line.split(/(\*\*.*?\*\*|https?:\/\/\S+|www\.\S+)/g);
       return (
