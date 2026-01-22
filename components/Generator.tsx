@@ -146,6 +146,18 @@ export default function Generator() {
       }
 
       setResult(data.result);
+      
+      // Parse follow-ups if present
+      const followUpMatch = data.result.match(/<<<FOLLOWUPS>>>([\s\S]*?)<<<END_FOLLOWUPS>>>/);
+      if (followUpMatch) {
+        const rawFollowUps = followUpMatch[1].trim().split('\n').filter(q => q.trim().length > 0);
+        setFollowUps(rawFollowUps);
+        // Remove the follow-up block from the displayed result
+        setResult(data.result.replace(/<<<FOLLOWUPS>>>[\s\S]*?<<<END_FOLLOWUPS>>>/, '').trim());
+      } else {
+        setFollowUps([]);
+      }
+
       addToRecent(agency, trimmedAction);
       setIsMock(typeof data.result === 'string' && data.result.startsWith('[MOCK MODE'));
     } catch (error) {

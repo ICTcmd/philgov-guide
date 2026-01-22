@@ -93,6 +93,13 @@ export async function POST(req: Request) {
       - ${languageInstruction}
       - Do NOT use Markdown headers like ###. Use **Bold Text** for headers.
       - **URLS:** Always use valid URLs starting with https://. Double check for typos (e.g. avoid 'wwww').
+      - **Follow-up Questions:** At the very end of your response, provide 3 short, relevant follow-up questions.
+      - **Format:** strictly use this format for the follow-ups:
+        <<<FOLLOWUPS>>>
+        Question 1?
+        Question 2?
+        Question 3?
+        <<<END_FOLLOWUPS>>>
       
       ADVANCED REASONING (CHAIN-OF-THOUGHT):
       - Before answering, think step-by-step:
