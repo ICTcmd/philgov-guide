@@ -1,4 +1,4 @@
-# JuanGuide Functional Enhancements Specification
+# BAGO APP Functional Enhancements Specification
 
 ## 1. Multi-Language Support (Implemented)
 

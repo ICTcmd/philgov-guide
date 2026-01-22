@@ -20,20 +20,20 @@ const fredoka = Fredoka({
 });
 
 export const metadata: Metadata = {
-  title: "JuanGuide: 🇵🇭 Gov Services Made Simple",
+  title: "BAGO APP: 🇵🇭 Gov Services Made Simple",
   description: "Skip the confusion! Get instant, easy checklists for SSS, PhilHealth, DFA, LTO, and more. Walang hassle, pramis! 🚀",
   keywords: ["Philippines", "Government Services", "SSS", "PhilHealth", "Pag-IBIG", "LTO", "DFA", "Requirements", "Guide"],
-  authors: [{ name: "JuanGuide Team" }],
+  authors: [{ name: "BAGO APP Team" }],
   openGraph: {
-    title: "JuanGuide: 🇵🇭 Gov Services Made Simple",
+    title: "BAGO APP: 🇵🇭 Gov Services Made Simple",
     description: "Skip the confusion! Get instant, easy checklists for SSS, PhilHealth, DFA, LTO, and more. Walang hassle, pramis! 🚀",
     type: "website",
     locale: "en_PH",
-    siteName: "JuanGuide",
+    siteName: "BAGO APP",
   },
   twitter: {
     card: "summary_large_image",
-    title: "JuanGuide: 🇵🇭 Gov Services Made Simple",
+    title: "BAGO APP: 🇵🇭 Gov Services Made Simple",
     description: "Skip the confusion! Get instant, easy checklists for SSS, PhilHealth, DFA, LTO, and more. Walang hassle, pramis! 🚀",
   },
 };

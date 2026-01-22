@@ -114,7 +114,7 @@ export default function LocationPicker({
         const url = `https://nominatim.openstreetmap.org/reverse?format=json&addressdetails=1&zoom=14&lat=${latitude}&lon=${longitude}`;
         const res = await fetch(url, {
           headers: {
-            'User-Agent': 'JuanGuide/1.0',
+            'User-Agent': 'BagoApp/1.0',
             'Accept': 'application/json'
           }
         });

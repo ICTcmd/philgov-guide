@@ -198,7 +198,7 @@ export default function Generator() {
            <ThemeToggle />
         </div>
         <h2 className="mb-4 text-5xl md:text-6xl tracking-tight font-extrabold font-display text-gray-900 dark:text-white">
-          JuanGuide
+          BAGO APP
         </h2>
         <p className="mb-4 font-light text-gray-500 sm:text-xl dark:text-gray-400">
           Select a service or ask a question to get your instant guide.

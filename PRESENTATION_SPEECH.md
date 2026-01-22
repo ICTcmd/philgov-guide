@@ -1,4 +1,4 @@
-# JuanGuide Presentation Script
+# BAGO APP Presentation Script
 
 **Target Audience:** Boss / Stakeholders
 **Tone:** Professional, Innovative, yet Practical
@@ -15,13 +15,13 @@ You end up going to the office unprepared, standing in line for hours, only to b
 
 It’s frustrating. It wastes time. And for our employees/citizens, it affects productivity."
 
-## 2. The Solution (JuanGuide)
-"Today, I want to present the solution. This is **JuanGuide**.
+## 2. The Solution (BAGO APP)
+"Today, I want to present the solution. This is **BAGO APP**.
 
-JuanGuide is not just another search engine. It is an **AI-powered Government Assistant** specifically designed for the Philippines. It understands the nuances of our bureaucracy and translates complex requirements into simple, step-by-step checklists."
+BAGO APP is not just another search engine. It is an **AI-powered Government Assistant** specifically designed for the Philippines. It understands the nuances of our bureaucracy and translates complex requirements into simple, step-by-step checklists."
 
 ## 3. The Live Demo (Walkthrough)
-*(Action: Open the JuanGuide App)*
+*(Action: Open the BAGO APP)*
 
 **A. Simplicity First**
 "Notice the interface. It’s clean. No clutter. We have 'Quick Chips' for common tasks like Passport Renewal or NBI Clearance. One click, and you’re ready."
@@ -57,6 +57,6 @@ They copy this 'Magic Link' and send it. When the employee clicks it, the app op
 - **Scalable:** It’s built on modern web technologies (Next.js) that can handle thousands of users."
 
 ## 5. The Closing
-"JuanGuide turns confusion into clarity. It saves time, reduces anxiety, and empowers Filipinos to interact with government services confidently.
+"BAGO APP turns confusion into clarity. It saves time, reduces anxiety, and empowers Filipinos to interact with government services confidently.
 
 This is the future of citizen assistance. Thank you."

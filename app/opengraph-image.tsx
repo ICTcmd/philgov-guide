@@ -58,7 +58,7 @@ export default async function Image() {
           </div>
           
           <div style={{ fontSize: 64, fontWeight: 800, letterSpacing: '-0.025em', fontFamily: 'sans-serif' }}>
-            JuanGuide
+            BAGO APP
           </div>
         </div>
 
@@ -84,7 +84,7 @@ export default async function Image() {
           }}
         >
           <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#22c55e' }}></div>
-          <div>juanguide.ph</div>
+          <div>bagoapp.ph</div>
         </div>
       </div>
     ),
