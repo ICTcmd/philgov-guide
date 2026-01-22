@@ -7,6 +7,7 @@ import LocationPicker from './LocationPicker';
 import ResultCard from './ResultCard';
 import RecentSearches from './RecentSearches';
 import LoadingSkeleton from './LoadingSkeleton';
+import { ThemeToggle } from './ThemeToggle';
 import { Image as ImageIcon, X, Share2, Mic } from 'lucide-react';
 
 type GenerateResponse = {

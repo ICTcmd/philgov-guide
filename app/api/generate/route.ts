@@ -57,12 +57,12 @@ export async function POST(req: Request) {
       );
     }
 
-    const { agency, action, location, imageResult.data;
+    const { agency, action, location, language, image } = parseResult.data;
 
     // 3. Performance: Caching (Skip if image is provided as it makes request unique)
     let cacheKey = "";
     if (!image) {
-      cacheKey = cacheService.generateKey('generate', agency, action, location
+      cacheKey = cacheService.generateKey('generate', agency, action, location, language);
       const cachedResult = cacheService.get<string>(cacheKey);
 
       if (cachedResult) {
