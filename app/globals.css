@@ -3,14 +3,16 @@
 @variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: #ffffff;
+  --background: #fff7ed;
   --foreground: #0f172a;
   
-  /* GovGuide Brand Colors */
-  --gov-blue: #1e3a8a; /* Deep Blue */
-  --gov-red: #dc2626; /* Flag Red */
-  --gov-yellow: #facc15; /* Sun Yellow */
-  --gov-green: #15803d; /* PhilHealth Green */
+  /* BAGO APP Brand Colors - Restored Blue Theme with Orange Background */
+  --brand-primary: #2563eb; /* Blue 600 - Main Action */
+  --brand-secondary: #1e40af; /* Blue 800 - Deep Contrast */
+  --brand-accent: #eff6ff; /* Blue 50 - Backgrounds */
+  --gov-red: #dc2626; /* Keep for alerts */
+  --gov-yellow: #facc15; /* Keep for warnings */
+  --gov-green: #15803d; /* Keep for success */
 }
 
 @theme inline {
@@ -18,9 +20,17 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  --font-display: var(--font-inter);
-  
-  --color-gov-blue: var(--gov-blue);
+  --font-display: var(--font-fredoka);
+  --font-playfair: var(--font-playfair);
+}
+
+html {
+  overflow-y: scroll;
+}
+
+.dark { --color-brand-primary: var(--brand-primary);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-accent: var(--brand-accent);
   --color-gov-red: var(--gov-red);
   --color-gov-yellow: var(--gov-yellow);
   --color-gov-green: var(--gov-green);
@@ -35,4 +45,61 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-inter), sans-serif;
+}
+
+/* Custom Animations */
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-entrance {
+  animation: fadeInScale 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-slide-up-fade {
+  animation: slideUpFade 0.5s ease-out forwards;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Professional Button Hover Effects */
+.btn-hover-effect {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Only apply hover effects on devices that support hovering (e.g. mouse) to avoid sticky states on mobile */
+@media (hover: hover) {
+  .btn-hover-effect:hover {
+    transform: translateY(-3px) scale(1.05) rotate(2deg);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  }
+}
+
+.btn-hover-effect:active {
+  transform: translateY(0) scale(0.95);
 }

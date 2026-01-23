@@ -31,6 +31,106 @@ export const AGENCY_LINKS: Record<string, { homepage?: string; locator?: string;
   'DSWD': { homepage: 'https://www.dswd.gov.ph/', locator: 'https://www.dswd.gov.ph/directory-of-officials/' },
 };
 
+export const AGENCY_ACTIONS: Record<string, string[]> = {
+  'DFA (Passport)': [
+    'New Passport Application',
+    'Renew Passport',
+    'Lost Passport',
+    'Passport for Minors',
+    'Travel Document',
+    'Authentication (Apostille)'
+  ],
+  'LTO (Driver’s License/Car)': [
+    'Student Permit',
+    'Non-Professional Driver’s License',
+    'Professional Driver’s License',
+    'Renew Driver’s License',
+    'Vehicle Registration Renewal',
+    'Transfer of Ownership'
+  ],
+  'BIR (TIN/Tax)': [
+    'Apply for TIN (Employee)',
+    'Apply for TIN (Self-Employed)',
+    'File Income Tax Return',
+    'Register Books of Accounts',
+    'Closure of Business'
+  ],
+  'PSA (Birth Cert)': [
+    'Get Birth Certificate',
+    'Get Marriage Certificate',
+    'Get CENOMAR',
+    'Get Death Certificate',
+    'Correct Entry in Certificate'
+  ],
+  'PSA (National ID)': [
+    'Apply for National ID',
+    'Track National ID Delivery',
+    'ePhilID Generation',
+    'Update Personal Information'
+  ],
+  'SSS': [
+    'Apply for SSS Number',
+    'Salary Loan',
+    'Maternity Benefit',
+    'Sickness Benefit',
+    'Unemployment Benefit',
+    'Retirement Benefit',
+    'Funeral Benefit'
+  ],
+  'PhilHealth': [
+    'Register as Member',
+    'MDR Request',
+    'Update Member Information',
+    'Check Contributions',
+    'Claim Benefits'
+  ],
+  'PAG-IBIG': [
+    'Apply for Housing Loan',
+    'Multi-Purpose Loan (MPL)',
+    'Calamity Loan',
+    'MP2 Savings',
+    'Loyalty Card Plus',
+    'Membership Registration'
+  ],
+  'NBI (Clearance)': [
+    'New NBI Clearance',
+    'Renew NBI Clearance',
+    'NBI Clearance for Abroad',
+    'Hit Status Inquiry'
+  ],
+  'DSWD': [
+    'Educational Assistance',
+    'Medical Assistance',
+    'Burial Assistance',
+    'Transportation Assistance',
+    '4Ps Application',
+    'Solo Parent ID'
+  ],
+  'PhilPost': [
+    'Apply for Postal ID',
+    'Renew Postal ID',
+    'Rush Postal ID',
+    'Track Parcel'
+  ],
+  'COMELEC': [
+    'Voter Registration',
+    'Transfer Registration',
+    'Reactivation',
+    'Voter Certification'
+  ],
+  'PNP': [
+    'Police Clearance',
+    'Gun License (Ltopf)',
+    'Report a Crime'
+  ],
+  'PRC': [
+    'Board Exam Application',
+    'Initial Registration',
+    'Renew Professional ID',
+    'Certifications'
+  ]
+};
+
 export const LOADING_MESSAGES = [
   "Consulting the bureaucracy...",
   "Finding the shortest line...",

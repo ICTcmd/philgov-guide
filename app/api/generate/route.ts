@@ -161,7 +161,7 @@ export async function POST(req: Request) {
       if (!googleKey) throw new Error("NO_GOOGLE_KEY");
       const genAI = new GoogleGenerativeAI(googleKey);
       const model = genAI.getGenerativeModel({ 
-        model: process.env.GOOGLE_MODEL || "gemini-1.5-flash",
+        model: process.env.GOOGLE_MODEL || "gemini-2.5-flash",
         generationConfig: {
           temperature: 0.4, // Lower temperature for more factual responses
           topK: 40,

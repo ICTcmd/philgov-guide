@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter } from "next/font/google";
+import { Geist, Geist_Mono, Inter, Playfair_Display, Fredoka } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { Navbar } from "@/components/Navbar";
@@ -20,21 +20,33 @@ const inter = Inter({
   weight: ["300", "400", "500", "600", "700", "800"],
 });
 
+const fredoka = Fredoka({
+  variable: "--font-fredoka",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+});
+
+const playfair = Playfair_Display({
+  variable: "--font-playfair",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
+
 export const metadata: Metadata = {
-  title: "GovGuide PH: Your Guide to Government Requirements",
+  title: "BAGO APP: Your Guide to Government Requirements",
   description: "Know the requirements. Understand the process. Avoid hassle. Your one-stop guide for SSS, PhilHealth, Pag-IBIG, and more.",
-  keywords: ["Philippines", "Government Services", "SSS", "PhilHealth", "Pag-IBIG", "LTO", "DFA", "Requirements", "Guide", "GovGuide PH"],
-  authors: [{ name: "GovGuide PH Team" }],
+  keywords: ["Philippines", "Government Services", "SSS", "PhilHealth", "Pag-IBIG", "LTO", "DFA", "Requirements", "Guide", "BAGO APP"],
+  authors: [{ name: "BAGO APP Team" }],
   openGraph: {
-    title: "GovGuide PH: Your Guide to Government Requirements",
+    title: "BAGO APP: Your Guide to Government Requirements",
     description: "Know the requirements. Understand the process. Avoid hassle.",
     type: "website",
     locale: "en_PH",
-    siteName: "GovGuide PH",
+    siteName: "BAGO APP",
   },
   twitter: {
     card: "summary_large_image",
-    title: "GovGuide PH",
+    title: "BAGO APP",
     description: "Know the requirements. Understand the process. Avoid hassle.",
   },
 };
@@ -47,7 +59,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased bg-slate-50 dark:bg-slate-950`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} ${playfair.variable} ${fredoka.variable} antialiased bg-slate-50 dark:bg-slate-950`}
       >
         <ThemeProvider
           attribute="class"

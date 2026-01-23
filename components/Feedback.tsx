@@ -64,7 +64,7 @@ export default function Feedback() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
               />
             </div>
             <div>
@@ -76,7 +76,7 @@ export default function Feedback() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
               />
             </div>
           </div>
@@ -90,7 +90,7 @@ export default function Feedback() {
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
               required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
               placeholder="Tell us what to improve..."
             />
           </div>
@@ -103,7 +103,7 @@ export default function Feedback() {
                 id="rating"
                 value={rating}
                 onChange={(e) => setRating(Number(e.target.value))}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
                 <option value={0}>No rating</option>
                 <option value={1}>1 - Poor</option>
@@ -117,7 +117,7 @@ export default function Feedback() {
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className={`inline-flex justify-center items-center py-3 px-6 text-sm font-bold text-center text-white rounded-lg bg-emerald-700 hover:bg-emerald-800 focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-900 shadow transition-all ${status === "sending" ? "opacity-50 cursor-not-allowed" : ""}`}
+                className={`inline-flex justify-center items-center py-3 px-6 text-sm font-bold text-center text-white rounded-lg bg-brand-primary hover:bg-brand-secondary focus:ring-4 focus:ring-orange-300 dark:focus:ring-orange-900 shadow btn-hover-effect ${status === "sending" ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 {status === "sending" ? "Sending..." : "Send Feedback"}
               </button>

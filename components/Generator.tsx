@@ -2,7 +2,8 @@
 
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
-import { PRESETS, LOADING_MESSAGES } from '@/lib/constants';
+import { useSearchParams } from 'next/navigation';
+import { PRESETS, LOADING_MESSAGES, AGENCY_ACTIONS } from '@/lib/constants';
 import LocationPicker from './LocationPicker';
 import ResultCard from './ResultCard';
 import RecentSearches from './RecentSearches';
@@ -32,6 +33,22 @@ export default function Generator() {
   const [recentSearches, setRecentSearches] = useState<Array<{ agency: string, action: string, date: number }>>([]);
   const [loadingMsgIndex, setLoadingMsgIndex] = useState(0);
   const resultRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
+
+  // Auto-select agency from URL query param
+  useEffect(() => {
+    const agencyParam = searchParams.get('agency');
+    if (agencyParam) {
+      // Decode URI component just in case, though searchParams.get usually handles it
+      setAgency(decodeURIComponent(agencyParam));
+      
+      // Optional: Auto-scroll to generator if param exists (handles direct link visits)
+      const element = document.getElementById('generator');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     let interval: NodeJS.Timeout;
@@ -247,16 +264,16 @@ export default function Generator() {
         <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-4">
            <div className="relative w-20 h-20 md:w-24 md:h-24">
              <Image 
-               src="/logo.png" 
-               alt="Bago City Logo" 
-               fill 
-               className="object-contain drop-shadow-md"
-               priority
-             />
+              src="/logo.png" 
+              alt="Bago App Logo" 
+              fill 
+              className="object-contain drop-shadow-md"
+              priority
+            />
            </div>
-           <h2 className="text-5xl md:text-6xl tracking-tight font-extrabold text-gov-navy dark:text-white">
-             GovGuide PH
-           </h2>
+           <h2 className="text-5xl md:text-6xl tracking-tight font-extrabold text-blue-900 dark:text-white">
+            BAGO APP
+          </h2>
         </div>
         <p className="mb-4 font-light text-gray-500 sm:text-xl dark:text-gray-400">
           Select a service or ask a question to get your instant guide.
@@ -265,14 +282,14 @@ export default function Generator() {
 
       <div className="flex flex-col gap-8 max-w-4xl mx-auto">
         {/* Input Section */}
-        <div className="w-full space-y-5 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl border border-blue-100 dark:border-gray-700">
+        <div className="w-full space-y-5 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
           <div className="flex flex-wrap gap-2 mb-2 justify-between items-center">
             <div className="flex flex-wrap gap-2">
             {PRESETS.map((p) => (
               <button
                 key={p.label}
                 onClick={() => { setAgency(p.agency); setAction(p.action); }}
-                className="text-xs md:text-sm px-3 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-blue-50 hover:text-gov-blue hover:border-blue-200 transition-colors dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
+                className="text-xs md:text-sm px-3 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 btn-hover-effect dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
               >
                 {p.label}
               </button>
@@ -280,7 +297,7 @@ export default function Generator() {
             </div>
             <button
               onClick={handleShare}
-              className="text-xs flex items-center gap-1 text-gov-blue hover:text-gov-navy font-medium px-2 py-1 rounded-lg hover:bg-blue-50 transition-colors"
+              className="text-xs flex items-center gap-1 text-blue-600 hover:text-blue-700 font-medium px-2 py-1 rounded-lg hover:bg-blue-50 btn-hover-effect"
               title="Share this search"
             >
               <Share2 className="w-4 h-4" />
@@ -303,7 +320,7 @@ export default function Generator() {
                 id="agency-select"
                 value={agency}
                 onChange={(e) => setAgency(e.target.value)}
-                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-gov-blue focus:border-gov-blue block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
+                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
               >
                 <option value="DFA (Passport)">DFA (Passport)</option>
                 <option value="LTO (Driver’s License/Car)">LTO (Driver’s License)</option>
@@ -325,7 +342,7 @@ export default function Generator() {
                <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
-                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-gov-blue focus:border-gov-blue block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
+                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
                >
                  <option value="taglish">Taglish 🇵🇭</option>
                  <option value="english">English 🇺🇸</option>
@@ -336,9 +353,29 @@ export default function Generator() {
             </div>
           </div>
 
+          {/* Dynamic Quick Actions for Selected Agency */}
+          {AGENCY_ACTIONS[agency] && (
+            <div>
+              <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-white">
+                Available Services for {agency.split('(')[0].trim()}
+              </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                {AGENCY_ACTIONS[agency].map((act) => (
+                  <button
+                    key={act}
+                    onClick={() => { setAction(act); handleGenerate(act); }}
+                    className="text-left text-xs md:text-sm px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 hover:bg-brand-primary hover:text-white hover:border-brand-primary transition-all shadow-sm font-medium text-gray-700 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-brand-primary"
+                  >
+                    {act}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div>
             <label htmlFor="action-input" className="block mb-2 text-sm font-bold text-gray-700 dark:text-white">
-              What do you need to do?
+              Or type a specific concern:
             </label>
             <div className="relative">
               <input
@@ -346,7 +383,7 @@ export default function Generator() {
                 type="text"
                 value={action}
                 onChange={(e) => setAction(e.target.value)}
-                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-gov-blue focus:border-gov-blue block w-full p-3 pr-12 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
+                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-3 pr-12 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
                 placeholder="e.g. Renew passport, Apply for TIN, Lost ID"
               />
               <button
@@ -403,7 +440,7 @@ export default function Generator() {
           <button
             onClick={() => handleGenerate()}
             disabled={loading || !action.trim()}
-            className={`w-full relative text-white bg-gov-blue hover:bg-gov-navy focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-base px-5 py-3.5 mr-2 mb-2 dark:bg-gov-blue dark:hover:bg-gov-navy focus:outline-none dark:focus:ring-blue-900 shadow-lg hover:shadow-xl transition-all overflow-hidden ${
+            className={`w-full relative text-white bg-brand-primary hover:bg-brand-secondary focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-base px-5 py-3.5 mr-2 mb-2 dark:bg-brand-primary dark:hover:bg-brand-secondary focus:outline-none dark:focus:ring-blue-900 shadow-lg btn-hover-effect overflow-hidden ${
               (loading || !action.trim()) ? 'opacity-90 cursor-wait' : ''
             }`}
           >
@@ -443,7 +480,7 @@ export default function Generator() {
                 {followUps.length > 0 && (
                   <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-blue-100 dark:border-gray-700">
                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                       <span className="bg-blue-100 text-blue-800 p-1 rounded-lg">❓</span> 
+                       <span className="bg-blue-100 text-blue-700 p-1 rounded-lg">❓</span> 
                        You might also ask...
                      </h3>
                      <div className="flex flex-wrap gap-3">
@@ -451,7 +488,7 @@ export default function Generator() {
                          <button
                            key={idx}
                            onClick={() => { setAction(q); handleGenerate(q); }}
-                           className="text-left text-sm px-4 py-3 rounded-lg bg-gray-50 hover:bg-blue-50 text-gray-700 hover:text-blue-900 border border-gray-200 hover:border-blue-200 transition-all dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:border-gray-600"
+                           className="text-left text-sm px-4 py-3 rounded-lg bg-gray-50 hover:bg-blue-50 text-gray-700 hover:text-blue-700 border border-gray-200 hover:border-blue-200 btn-hover-effect dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:border-gray-600"
                          >
                            {q}
                          </button>
