@@ -3,13 +3,13 @@
 import { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import { useSearchParams } from 'next/navigation';
-import { PRESETS, LOADING_MESSAGES, AGENCY_ACTIONS } from '@/lib/constants';
+import { LOADING_MESSAGES, AGENCY_ACTIONS } from '@/lib/constants';
 import LocationPicker from './LocationPicker';
 import ResultCard from './ResultCard';
 import RecentSearches from './RecentSearches';
 import LoadingSkeleton from './LoadingSkeleton';
 import { ThemeToggle } from './ThemeToggle';
-import { Image as ImageIcon, X, Share2, Mic } from 'lucide-react';
+import { Image as ImageIcon, X, Mic } from 'lucide-react';
 
 type GenerateResponse = {
   result?: string;
@@ -127,23 +127,6 @@ export default function Generator() {
       recognition.start();
     } else {
       alert("Voice input is not supported in this browser.");
-    }
-  };
-
-  const handleShare = async () => {
-    if (typeof navigator !== 'undefined' && navigator.share) {
-      try {
-        await navigator.share({
-          title: 'BAGO APP',
-          text: `Check out this guide for ${agency} - ${action}`,
-          url: window.location.href,
-        });
-      } catch (err) {
-        console.error('Error sharing:', err);
-      }
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      // Optional: show toast or alert
     }
   };
 
@@ -283,28 +266,6 @@ export default function Generator() {
       <div className="flex flex-col gap-8 max-w-4xl mx-auto">
         {/* Input Section */}
         <div className="w-full space-y-5 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
-          <div className="flex flex-wrap gap-2 mb-2 justify-between items-center">
-            <div className="flex flex-wrap gap-2">
-            {PRESETS.map((p) => (
-              <button
-                key={p.label}
-                onClick={() => { setAgency(p.agency); setAction(p.action); }}
-                className="text-xs md:text-sm px-3 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-blue-50 hover:text-blue-600 hover:border-blue-200 btn-hover-effect dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
-              >
-                {p.label}
-              </button>
-            ))}
-            </div>
-            <button
-              onClick={handleShare}
-              className="text-xs flex items-center gap-1 text-blue-600 hover:text-blue-700 font-medium px-2 py-1 rounded-lg hover:bg-blue-50 btn-hover-effect"
-              title="Share this search"
-            >
-              <Share2 className="w-4 h-4" />
-              <span className="hidden sm:inline">Share Link</span>
-            </button>
-          </div>
-
           <RecentSearches 
             searches={recentSearches} 
             onSelect={(a, act) => { setAgency(a); setAction(act); }} 

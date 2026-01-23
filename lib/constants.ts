@@ -1,19 +1,3 @@
-export const PRESETS = [
-  { label: 'Renew Passport', agency: 'DFA (Passport)', action: 'Renew passport' },
-  { label: 'National ID', agency: 'PSA (National ID)', action: 'Apply for PhilSys ID' },
-  { label: 'NBI Clearance', agency: 'NBI (Clearance)', action: 'Apply for NBI Clearance' },
-  { label: 'Driver’s License', agency: 'LTO (Driver’s License/Car)', action: 'Apply for Non-Professional Driver’s License' },
-  { label: 'Get TIN', agency: 'BIR (TIN/Tax)', action: 'Apply for TIN' },
-  { label: 'PhilHealth ID', agency: 'PhilHealth', action: 'Apply for PhilHealth ID' },
-  { label: 'SSS Number', agency: 'SSS', action: 'Apply for SSS Number' },
-  { label: 'Pag-IBIG ID', agency: 'PAG-IBIG', action: 'Apply for Loyalty Card Plus' },
-  { label: 'Postal ID', agency: 'PhilPost', action: 'Apply for Postal ID' },
-  { label: 'Police Clearance', agency: 'PNP', action: 'Get Police Clearance' },
-  { label: 'Voter’s Cert', agency: 'COMELEC', action: 'Get Voter Certification' },
-  { label: 'PRC License', agency: 'PRC', action: 'Renew Professional License' },
-  { label: 'DSWD Aid', agency: 'DSWD', action: 'Apply for Financial Assistance / 4Ps' },
-];
-
 export const AGENCY_LINKS: Record<string, { homepage?: string; locator?: string; appointment?: string }> = {
   'DFA (Passport)': { homepage: 'https://dfa.gov.ph/', locator: 'https://consular.dfa.gov.ph/consular-offices/', appointment: 'https://www.passport.gov.ph/' },
   "LTO (Driver’s License/Car)": { homepage: 'https://lto.gov.ph/', locator: 'https://lto.gov.ph/directory-of-offices.html', appointment: 'https://portal.lto.gov.ph/' },
