@@ -1,42 +1,86 @@
-import Image from 'next/image';
 import Link from 'next/link';
-import { ThemeToggle } from './ThemeToggle';
 
 export default function Hero() {
   return (
-    <section className="bg-gradient-to-b from-emerald-50 to-slate-50 dark:from-slate-950 dark:to-slate-950 relative">
-      <div className="absolute top-4 right-4 z-10">
-        <ThemeToggle />
-      </div>
-      <div className="py-8 px-4 mx-auto max-w-screen-xl text-center lg:py-24 lg:px-12">
-        <div className="flex justify-center mb-6">
-          <div className="relative w-24 h-24 md:w-32 md:h-32">
-            <Image 
-              src="/logo.png" 
-              alt="Bago City Logo" 
-              fill 
-              className="object-contain"
-              priority
-            />
-          </div>
-        </div>
-        <h1 className="mb-4 text-4xl font-extrabold font-display tracking-tight leading-none text-emerald-900 md:text-5xl lg:text-6xl dark:text-white">
-          Government Requirements Made <span className="text-emerald-600 dark:text-emerald-400">Easy</span>
+    <section className="bg-slate-50 dark:bg-slate-950 pt-10 pb-16">
+      <div className="py-8 px-4 mx-auto max-w-screen-xl text-center lg:px-12">
+        
+        {/* Main Headline */}
+        <h1 className="mb-6 text-3xl font-extrabold font-display tracking-tight leading-tight text-gov-blue md:text-4xl lg:text-5xl dark:text-blue-400">
+          Know the Requirements. <br className="hidden md:block" />
+          Understand the Process. Avoid Hassle.
         </h1>
-        <p className="mb-8 text-lg font-normal text-gray-500 lg:text-xl sm:px-16 xl:px-48 dark:text-gray-400">
-          No more confusion. Get clear, step-by-step guides for SSS, PhilHealth, DFA, and more in seconds. Walang hassle!
-        </p>
-        <p className="mb-8 text-sm text-gray-500 sm:px-16 xl:px-48 dark:text-gray-400 italic">
-          Disclaimer: BAGO APP is a guide only. We do not process documents or applications directly.
-        </p>
-        <div className="flex flex-col mb-8 lg:mb-16 space-y-4 sm:flex-row sm:justify-center sm:space-y-0 sm:space-x-4">
-          <Link href="#generator" className="inline-flex justify-center items-center py-4 px-6 text-base font-bold text-center text-white rounded-lg bg-emerald-700 hover:bg-emerald-800 focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-900 shadow-lg hover:shadow-xl transition-all">
-            Get My Guide
-            <svg className="ml-2 -mr-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clipRule="evenodd"></path></svg>
+        
+        {/* Agency Quick Links */}
+        <div className="flex flex-wrap justify-center gap-4 mb-12 mt-8">
+          <Link href="#generator" className="flex items-center justify-between px-6 py-3 bg-gov-blue text-white rounded-lg font-bold shadow-md hover:bg-blue-900 transition-colors min-w-[160px]">
+            <span>SSS</span>
+            <span className="ml-2">›</span>
           </Link>
-          <Link href="#features" className="inline-flex justify-center items-center py-4 px-6 text-base font-medium text-center text-gray-900 rounded-lg border-2 border-gray-200 hover:bg-gray-100 hover:border-gray-300 focus:ring-4 focus:ring-gray-100 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 dark:focus:ring-gray-800 transition-all">
-            How It Works
-          </Link> 
+          <Link href="#generator" className="flex items-center justify-between px-6 py-3 bg-gov-yellow text-blue-900 rounded-lg font-bold shadow-md hover:bg-yellow-400 transition-colors min-w-[160px]">
+            <span>Pag-IBIG</span>
+            <span className="ml-2">›</span>
+          </Link>
+          <Link href="#generator" className="flex items-center justify-between px-6 py-3 bg-gov-green text-white rounded-lg font-bold shadow-md hover:bg-green-800 transition-colors min-w-[160px]">
+            <span>PhilHealth</span>
+            <span className="ml-2">›</span>
+          </Link>
+          <Link href="#generator" className="flex items-center justify-between px-6 py-3 bg-white text-gray-700 border border-gray-200 rounded-lg font-bold shadow-sm hover:bg-gray-50 transition-colors min-w-[160px] dark:bg-gray-800 dark:text-white dark:border-gray-700">
+            <span>National ID</span>
+            <span className="ml-2">›</span>
+          </Link>
+        </div>
+
+        {/* Popular Service Cards Preview (Static) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left max-w-6xl mx-auto">
+          {/* Card 1: SSS */}
+          <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow dark:bg-gray-800 dark:border-gray-700 flex flex-col items-center text-center">
+            <div className="w-16 h-16 mb-4 bg-blue-50 rounded-lg flex items-center justify-center">
+               {/* Icon Placeholder */}
+               <div className="w-10 h-10 bg-gov-blue rounded-md"></div>
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">SSS Membership</h3>
+            <p className="text-sm text-gray-500 mb-4 dark:text-gray-400">Benefits & Registration</p>
+            <Link href="#generator" className="mt-auto text-sm font-semibold text-white bg-gov-blue px-6 py-2 rounded-full hover:bg-blue-900 transition-colors">
+              View Guide ›
+            </Link>
+          </div>
+
+           {/* Card 2: Pag-IBIG */}
+           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow dark:bg-gray-800 dark:border-gray-700 flex flex-col items-center text-center">
+            <div className="w-16 h-16 mb-4 bg-yellow-50 rounded-lg flex items-center justify-center">
+               <div className="w-10 h-10 bg-gov-yellow rounded-md"></div>
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">Pag-IBIG Fund</h3>
+            <p className="text-sm text-gray-500 mb-4 dark:text-gray-400">Loans & Contributions</p>
+            <Link href="#generator" className="mt-auto text-sm font-semibold text-blue-900 bg-gov-yellow px-6 py-2 rounded-full hover:bg-yellow-400 transition-colors">
+              View Guide ›
+            </Link>
+          </div>
+
+           {/* Card 3: PhilHealth */}
+           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow dark:bg-gray-800 dark:border-gray-700 flex flex-col items-center text-center">
+            <div className="w-16 h-16 mb-4 bg-green-50 rounded-lg flex items-center justify-center">
+               <div className="w-10 h-10 bg-gov-green rounded-md"></div>
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">PhilHealth Services</h3>
+            <p className="text-sm text-gray-500 mb-4 dark:text-gray-400">Membership & Benefits</p>
+            <Link href="#generator" className="mt-auto text-sm font-semibold text-white bg-gov-green px-6 py-2 rounded-full hover:bg-green-800 transition-colors">
+              View Guide ›
+            </Link>
+          </div>
+
+           {/* Card 4: National ID */}
+           <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow dark:bg-gray-800 dark:border-gray-700 flex flex-col items-center text-center">
+            <div className="w-16 h-16 mb-4 bg-gray-50 rounded-lg flex items-center justify-center">
+               <div className="w-10 h-10 bg-gray-400 rounded-md"></div>
+            </div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-1">National ID</h3>
+            <p className="text-sm text-gray-500 mb-4 dark:text-gray-400">Get Your PhilSys ID</p>
+            <Link href="#generator" className="mt-auto text-sm font-semibold text-gray-700 bg-gray-100 px-6 py-2 rounded-full hover:bg-gray-200 transition-colors dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600">
+              View Guide ›
+            </Link>
+          </div>
         </div>
       </div>
     </section>

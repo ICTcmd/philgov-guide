@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Navbar } from "@/components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -20,21 +21,21 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "BAGO APP: 🇵🇭 Gov Services Made Simple",
-  description: "Skip the confusion! Get instant, easy checklists for SSS, PhilHealth, DFA, LTO, and more. Walang hassle, pramis! 🚀",
-  keywords: ["Philippines", "Government Services", "SSS", "PhilHealth", "Pag-IBIG", "LTO", "DFA", "Requirements", "Guide", "Bago City"],
-  authors: [{ name: "BAGO APP Team" }],
+  title: "GovGuide PH: Your Guide to Government Requirements",
+  description: "Know the requirements. Understand the process. Avoid hassle. Your one-stop guide for SSS, PhilHealth, Pag-IBIG, and more.",
+  keywords: ["Philippines", "Government Services", "SSS", "PhilHealth", "Pag-IBIG", "LTO", "DFA", "Requirements", "Guide", "GovGuide PH"],
+  authors: [{ name: "GovGuide PH Team" }],
   openGraph: {
-    title: "BAGO APP: 🇵🇭 Gov Services Made Simple",
-    description: "Skip the confusion! Get instant, easy checklists for SSS, PhilHealth, DFA, LTO, and more. Walang hassle, pramis! 🚀",
+    title: "GovGuide PH: Your Guide to Government Requirements",
+    description: "Know the requirements. Understand the process. Avoid hassle.",
     type: "website",
     locale: "en_PH",
-    siteName: "BAGO APP",
+    siteName: "GovGuide PH",
   },
   twitter: {
     card: "summary_large_image",
-    title: "BAGO APP: 🇵🇭 Gov Services Made Simple",
-    description: "Skip the confusion! Get instant, easy checklists for SSS, PhilHealth, DFA, LTO, and more. Walang hassle, pramis! 🚀",
+    title: "GovGuide PH",
+    description: "Know the requirements. Understand the process. Avoid hassle.",
   },
 };
 
@@ -46,14 +47,15 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} ${inter.variable} antialiased bg-slate-50 dark:bg-slate-950`}
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="light"
           enableSystem
           disableTransitionOnChange
         >
+          <Navbar />
           {children}
         </ThemeProvider>
       </body>

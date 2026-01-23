@@ -250,12 +250,12 @@ export default function Generator() {
                src="/logo.png" 
                alt="Bago City Logo" 
                fill 
-               className="object-contain"
+               className="object-contain drop-shadow-md"
                priority
              />
            </div>
-           <h2 className="text-5xl md:text-6xl tracking-tight font-extrabold font-display text-emerald-900 dark:text-white">
-             BAGO APP
+           <h2 className="text-5xl md:text-6xl tracking-tight font-extrabold text-gov-navy dark:text-white">
+             GovGuide PH
            </h2>
         </div>
         <p className="mb-4 font-light text-gray-500 sm:text-xl dark:text-gray-400">
@@ -265,14 +265,14 @@ export default function Generator() {
 
       <div className="flex flex-col gap-8 max-w-4xl mx-auto">
         {/* Input Section */}
-        <div className="w-full space-y-5 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl border border-emerald-100 dark:border-gray-700">
+        <div className="w-full space-y-5 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl border border-blue-100 dark:border-gray-700">
           <div className="flex flex-wrap gap-2 mb-2 justify-between items-center">
             <div className="flex flex-wrap gap-2">
             {PRESETS.map((p) => (
               <button
                 key={p.label}
                 onClick={() => { setAgency(p.agency); setAction(p.action); }}
-                className="text-xs md:text-sm px-3 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 transition-colors dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
+                className="text-xs md:text-sm px-3 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-blue-50 hover:text-gov-blue hover:border-blue-200 transition-colors dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
               >
                 {p.label}
               </button>
@@ -280,7 +280,7 @@ export default function Generator() {
             </div>
             <button
               onClick={handleShare}
-              className="text-xs flex items-center gap-1 text-emerald-700 hover:text-emerald-900 font-medium px-2 py-1 rounded-lg hover:bg-emerald-50 transition-colors"
+              className="text-xs flex items-center gap-1 text-gov-blue hover:text-gov-navy font-medium px-2 py-1 rounded-lg hover:bg-blue-50 transition-colors"
               title="Share this search"
             >
               <Share2 className="w-4 h-4" />
@@ -303,7 +303,7 @@ export default function Generator() {
                 id="agency-select"
                 value={agency}
                 onChange={(e) => setAgency(e.target.value)}
-                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
+                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-gov-blue focus:border-gov-blue block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
               >
                 <option value="DFA (Passport)">DFA (Passport)</option>
                 <option value="LTO (Driver’s License/Car)">LTO (Driver’s License)</option>
@@ -325,7 +325,7 @@ export default function Generator() {
                <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
-                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
+                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-gov-blue focus:border-gov-blue block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
                >
                  <option value="taglish">Taglish 🇵🇭</option>
                  <option value="english">English 🇺🇸</option>
@@ -346,52 +346,46 @@ export default function Generator() {
                 type="text"
                 value={action}
                 onChange={(e) => setAction(e.target.value)}
-                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 pr-12 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
+                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-gov-blue focus:border-gov-blue block w-full p-3 pr-12 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
                 placeholder="e.g. Renew passport, Apply for TIN, Lost ID"
               />
               <button
+                type="button"
                 onClick={handleVoiceInput}
-                className={`absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-full transition-all ${
-                  isListening 
-                    ? 'bg-red-100 text-red-600 animate-pulse' 
-                    : 'text-gray-400 hover:text-emerald-600 hover:bg-gray-100'
-                }`}
-                title="Speak to type"
+                className={`absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-full hover:bg-gray-100 transition-colors ${isListening ? 'bg-red-100 text-red-600 animate-pulse' : 'text-gray-400'}`}
+                title="Voice Input"
               >
                 <Mic className="w-5 h-5" />
               </button>
             </div>
+            {isListening && <p className="text-xs text-red-500 mt-1 ml-1">Listening...</p>}
           </div>
 
           <div>
-            <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-white">
-              Upload Document/Form (Optional)
+            <label className="block mb-2 text-sm font-bold text-gray-900 dark:text-white">
+              Or Upload a Photo (Optional)
             </label>
-            <div className="flex items-center gap-4">
-               {!image ? (
-                <label className="flex items-center gap-2 cursor-pointer px-4 py-2 border border-dashed border-gray-300 rounded-lg hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors">
-                  <ImageIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
-                  <span className="text-sm text-gray-500 dark:text-gray-400">Choose Image</span>
-                  <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                </label>
-               ) : (
-                <div className="relative group">
-                  <Image
-                    src={image}
-                    alt="Uploaded"
-                    width={64}
-                    height={64}
-                    className="h-16 w-16 object-cover rounded-lg border border-gray-200 dark:border-gray-600"
-                  />
-                  <button 
-                    onClick={() => setImage(null)}
-                    className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-0.5 shadow-md hover:bg-red-600 transition-colors"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-               )}
-               {image && <span className="text-xs text-green-600 dark:text-green-400 font-medium">Image attached</span>}
+            <div className="flex items-center justify-center w-full">
+              <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 transition-all">
+                {image ? (
+                  <div className="relative w-full h-full p-2">
+                    <img src={image} alt="Preview" className="w-full h-full object-contain rounded-lg" />
+                    <button 
+                      onClick={(e) => { e.preventDefault(); setImage(null); }}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                    <ImageIcon className="w-8 h-8 mb-3 text-gray-400" />
+                    <p className="text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span> or drag and drop</p>
+                    <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG (MAX. 5MB)</p>
+                  </div>
+                )}
+                <input id="dropzone-file" type="file" accept="image/*" className="hidden" onChange={handleImageUpload} />
+              </label>
             </div>
           </div>
 
@@ -409,7 +403,7 @@ export default function Generator() {
           <button
             onClick={() => handleGenerate()}
             disabled={loading || !action.trim()}
-            className={`w-full relative text-white bg-emerald-700 hover:bg-emerald-800 focus:ring-4 focus:ring-emerald-300 font-bold rounded-lg text-base px-5 py-3.5 mr-2 mb-2 dark:bg-emerald-600 dark:hover:bg-emerald-700 focus:outline-none dark:focus:ring-emerald-800 shadow-lg hover:shadow-xl transition-all overflow-hidden ${
+            className={`w-full relative text-white bg-gov-blue hover:bg-gov-navy focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-base px-5 py-3.5 mr-2 mb-2 dark:bg-gov-blue dark:hover:bg-gov-navy focus:outline-none dark:focus:ring-blue-900 shadow-lg hover:shadow-xl transition-all overflow-hidden ${
               (loading || !action.trim()) ? 'opacity-90 cursor-wait' : ''
             }`}
           >
@@ -447,9 +441,9 @@ export default function Generator() {
                 />
                 
                 {followUps.length > 0 && (
-                  <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-emerald-100 dark:border-gray-700">
+                  <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-blue-100 dark:border-gray-700">
                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                       <span className="bg-emerald-100 text-emerald-800 p-1 rounded-lg">❓</span> 
+                       <span className="bg-blue-100 text-blue-800 p-1 rounded-lg">❓</span> 
                        You might also ask...
                      </h3>
                      <div className="flex flex-wrap gap-3">
@@ -457,7 +451,7 @@ export default function Generator() {
                          <button
                            key={idx}
                            onClick={() => { setAction(q); handleGenerate(q); }}
-                           className="text-left text-sm px-4 py-3 rounded-lg bg-gray-50 hover:bg-emerald-50 text-gray-700 hover:text-emerald-800 border border-gray-200 hover:border-emerald-200 transition-all dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:border-gray-600"
+                           className="text-left text-sm px-4 py-3 rounded-lg bg-gray-50 hover:bg-blue-50 text-gray-700 hover:text-blue-900 border border-gray-200 hover:border-blue-200 transition-all dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:border-gray-600"
                          >
                            {q}
                          </button>
