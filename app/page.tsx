@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Hero from "@/components/Hero";
 import Features from "@/components/Features";
 import Generator from "@/components/Generator";
@@ -9,7 +10,9 @@ export default function Home() {
     <main className="flex min-h-screen flex-col items-center justify-between">
       <Hero />
       <HowItWorks />
-      <Generator />
+      <Suspense fallback={<div className="py-12 text-center">Loading Generator...</div>}>
+        <Generator />
+      </Suspense>
       <Features />
       <Feedback />
     </main>
