@@ -270,7 +270,7 @@ export default function LocationPicker({
         value={location}
         onChange={(e) => setLocation(e.target.value)}
         onBlur={refineTypedLocation}
-        className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-violet-500 focus:border-violet-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
+        className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
         placeholder="e.g. Quezon City, Cebu, Davao (Optional)"
       />
       <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
@@ -280,19 +280,19 @@ export default function LocationPicker({
         <button
           onClick={autoFillLocation}
           disabled={geoLoading}
-          className={`text-white bg-green-500 hover:bg-green-600 focus:ring-4 focus:ring-green-200 font-medium rounded-xl text-sm px-4 py-2.5 dark:bg-green-600 dark:hover:bg-green-700 transition-colors ${geoLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={`text-white bg-emerald-500 hover:bg-emerald-600 focus:ring-4 focus:ring-emerald-200 font-medium rounded-lg text-sm px-4 py-2.5 dark:bg-emerald-600 dark:hover:bg-emerald-700 transition-colors ${geoLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           {geoLoading ? 'Detecting…' : 'Use my location'}
         </button>
         <button
           onClick={openMapPicker}
-          className="text-sm px-4 py-2.5 rounded-xl border border-gray-200 text-gray-700 hover:bg-gray-50 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 transition-colors"
+          className="text-sm px-4 py-2.5 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 dark:text-white dark:border-gray-700 dark:hover:bg-gray-700 transition-colors"
         >
           Pin on map
         </button>
         <button
           onClick={() => setShowTerms(true)}
-          className="text-sm text-gray-500 underline hover:text-violet-600 dark:text-gray-400 transition-colors"
+          className="text-sm text-gray-500 underline hover:text-emerald-600 dark:text-gray-400 transition-colors"
         >
           View Terms
         </button>
@@ -311,27 +311,27 @@ export default function LocationPicker({
           type="checkbox"
           checked={termsAccepted}
           onChange={(e) => setTermsAccepted(e.target.checked)}
-          className="w-4 h-4 border-gray-300 rounded text-violet-600 focus:ring-violet-500"
+          className="w-4 h-4 border-gray-300 rounded text-emerald-600 focus:ring-emerald-500"
         />
         <label htmlFor="terms" className="text-xs text-gray-500 dark:text-gray-300">
           I agree to Terms & Conditions and allow location access for nearest office suggestions.
         </label>
       </div>
-      <div className="mt-4 p-4 rounded-xl border border-violet-100 bg-violet-50 dark:border-gray-700 dark:bg-gray-800/50">
-        <p className="text-sm font-bold text-violet-900 dark:text-violet-200">Quick Links</p>
+      <div className="mt-4 p-4 rounded-lg border border-emerald-100 bg-emerald-50 dark:border-gray-700 dark:bg-gray-800/50">
+        <p className="text-sm font-bold text-emerald-900 dark:text-emerald-200">Quick Links</p>
         <div className="mt-2 flex flex-wrap gap-2">
           {AGENCY_LINKS[agency]?.homepage && (
-            <a href={AGENCY_LINKS[agency].homepage} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-full bg-white text-violet-700 border border-violet-100 hover:bg-violet-50 dark:bg-gray-700 dark:text-violet-300 dark:border-gray-600 transition-colors">
+            <a href={AGENCY_LINKS[agency].homepage} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-full bg-white text-emerald-700 border border-emerald-100 hover:bg-emerald-50 dark:bg-gray-700 dark:text-emerald-300 dark:border-gray-600 transition-colors">
               Official Site
             </a>
           )}
           {AGENCY_LINKS[agency]?.locator && (
-            <a href={AGENCY_LINKS[agency].locator} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-full bg-white text-violet-700 border border-violet-100 hover:bg-violet-50 dark:bg-gray-700 dark:text-violet-300 dark:border-gray-600 transition-colors">
+            <a href={AGENCY_LINKS[agency].locator} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-full bg-white text-emerald-700 border border-emerald-100 hover:bg-emerald-50 dark:bg-gray-700 dark:text-emerald-300 dark:border-gray-600 transition-colors">
               Branch Locator
             </a>
           )}
           {AGENCY_LINKS[agency]?.appointment && (
-            <a href={AGENCY_LINKS[agency].appointment} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-full bg-white text-violet-700 border border-violet-100 hover:bg-violet-50 dark:bg-gray-700 dark:text-violet-300 dark:border-gray-600 transition-colors">
+            <a href={AGENCY_LINKS[agency].appointment} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-full bg-white text-emerald-700 border border-emerald-100 hover:bg-emerald-50 dark:bg-gray-700 dark:text-emerald-300 dark:border-gray-600 transition-colors">
               Appointment
             </a>
           )}
@@ -350,7 +350,7 @@ export default function LocationPicker({
             <div className="mt-5 flex gap-3">
               <button
                 onClick={() => { setTermsAccepted(true); setShowTerms(false); }}
-                className="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-4 py-2"
+                className="text-white bg-emerald-600 hover:bg-emerald-700 font-medium rounded-lg text-sm px-4 py-2"
               >
                 I Agree
               </button>
@@ -379,7 +379,7 @@ export default function LocationPicker({
               </button>
               <button
                 onClick={() => setShowMapPicker(false)}
-                className="text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-4 py-2"
+                className="text-white bg-emerald-600 hover:bg-emerald-700 font-medium rounded-lg text-sm px-4 py-2"
               >
                 Use this location
               </button>

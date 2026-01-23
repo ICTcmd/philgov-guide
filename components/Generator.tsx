@@ -244,9 +244,20 @@ export default function Generator() {
         <div className="absolute top-0 right-0 hidden md:block">
            <ThemeToggle />
         </div>
-        <h2 className="mb-4 text-5xl md:text-6xl tracking-tight font-extrabold font-display text-gray-900 dark:text-white">
-          BAGO APP
-        </h2>
+        <div className="flex flex-col md:flex-row justify-center items-center gap-4 mb-4">
+           <div className="relative w-20 h-20 md:w-24 md:h-24">
+             <Image 
+               src="/logo.png" 
+               alt="Bago City Logo" 
+               fill 
+               className="object-contain"
+               priority
+             />
+           </div>
+           <h2 className="text-5xl md:text-6xl tracking-tight font-extrabold font-display text-emerald-900 dark:text-white">
+             BAGO APP
+           </h2>
+        </div>
         <p className="mb-4 font-light text-gray-500 sm:text-xl dark:text-gray-400">
           Select a service or ask a question to get your instant guide.
         </p>
@@ -254,14 +265,14 @@ export default function Generator() {
 
       <div className="flex flex-col gap-8 max-w-4xl mx-auto">
         {/* Input Section */}
-        <div className="w-full space-y-5 bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-xl border border-violet-100 dark:border-gray-700">
+        <div className="w-full space-y-5 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl border border-emerald-100 dark:border-gray-700">
           <div className="flex flex-wrap gap-2 mb-2 justify-between items-center">
             <div className="flex flex-wrap gap-2">
             {PRESETS.map((p) => (
               <button
                 key={p.label}
                 onClick={() => { setAgency(p.agency); setAction(p.action); }}
-                className="text-xs md:text-sm px-3 py-1.5 rounded-full border border-gray-200 text-gray-600 hover:bg-violet-50 hover:text-violet-700 hover:border-violet-200 transition-colors dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
+                className="text-xs md:text-sm px-3 py-1.5 rounded-lg border border-gray-200 text-gray-600 hover:bg-emerald-50 hover:text-emerald-700 hover:border-emerald-200 transition-colors dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700"
               >
                 {p.label}
               </button>
@@ -269,7 +280,7 @@ export default function Generator() {
             </div>
             <button
               onClick={handleShare}
-              className="text-xs flex items-center gap-1 text-violet-600 hover:text-violet-800 font-medium px-2 py-1 rounded-lg hover:bg-violet-50 transition-colors"
+              className="text-xs flex items-center gap-1 text-emerald-700 hover:text-emerald-900 font-medium px-2 py-1 rounded-lg hover:bg-emerald-50 transition-colors"
               title="Share this search"
             >
               <Share2 className="w-4 h-4" />
@@ -292,7 +303,7 @@ export default function Generator() {
                 id="agency-select"
                 value={agency}
                 onChange={(e) => setAgency(e.target.value)}
-                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-violet-500 focus:border-violet-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
+                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
               >
                 <option value="DFA (Passport)">DFA (Passport)</option>
                 <option value="LTO (Driver’s License/Car)">LTO (Driver’s License)</option>
@@ -314,7 +325,7 @@ export default function Generator() {
                <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
-                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-violet-500 focus:border-violet-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
+                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
                >
                  <option value="taglish">Taglish 🇵🇭</option>
                  <option value="english">English 🇺🇸</option>
@@ -335,7 +346,7 @@ export default function Generator() {
                 type="text"
                 value={action}
                 onChange={(e) => setAction(e.target.value)}
-                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-xl focus:ring-violet-500 focus:border-violet-500 block w-full p-3 pr-12 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
+                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 pr-12 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
                 placeholder="e.g. Renew passport, Apply for TIN, Lost ID"
               />
               <button
@@ -343,7 +354,7 @@ export default function Generator() {
                 className={`absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-full transition-all ${
                   isListening 
                     ? 'bg-red-100 text-red-600 animate-pulse' 
-                    : 'text-gray-400 hover:text-violet-600 hover:bg-gray-100'
+                    : 'text-gray-400 hover:text-emerald-600 hover:bg-gray-100'
                 }`}
                 title="Speak to type"
               >
@@ -358,7 +369,7 @@ export default function Generator() {
             </label>
             <div className="flex items-center gap-4">
                {!image ? (
-                <label className="flex items-center gap-2 cursor-pointer px-4 py-2 border border-dashed border-gray-300 rounded-xl hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors">
+                <label className="flex items-center gap-2 cursor-pointer px-4 py-2 border border-dashed border-gray-300 rounded-lg hover:bg-gray-50 dark:border-gray-600 dark:hover:bg-gray-700 transition-colors">
                   <ImageIcon className="w-5 h-5 text-gray-500 dark:text-gray-400" />
                   <span className="text-sm text-gray-500 dark:text-gray-400">Choose Image</span>
                   <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
@@ -398,7 +409,7 @@ export default function Generator() {
           <button
             onClick={() => handleGenerate()}
             disabled={loading || !action.trim()}
-            className={`w-full relative text-white bg-violet-600 hover:bg-violet-700 focus:ring-4 focus:ring-violet-300 font-bold rounded-xl text-base px-5 py-3.5 mr-2 mb-2 dark:bg-violet-600 dark:hover:bg-violet-700 focus:outline-none dark:focus:ring-violet-800 shadow-lg hover:shadow-xl transition-all overflow-hidden ${
+            className={`w-full relative text-white bg-emerald-700 hover:bg-emerald-800 focus:ring-4 focus:ring-emerald-300 font-bold rounded-lg text-base px-5 py-3.5 mr-2 mb-2 dark:bg-emerald-600 dark:hover:bg-emerald-700 focus:outline-none dark:focus:ring-emerald-800 shadow-lg hover:shadow-xl transition-all overflow-hidden ${
               (loading || !action.trim()) ? 'opacity-90 cursor-wait' : ''
             }`}
           >
@@ -416,7 +427,7 @@ export default function Generator() {
           </button>
           
           {error && (
-            <div className="p-4 mb-4 text-sm text-red-800 rounded-xl bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
+            <div className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400" role="alert">
               {error}
             </div>
           )}
@@ -436,9 +447,9 @@ export default function Generator() {
                 />
                 
                 {followUps.length > 0 && (
-                  <div className="bg-white dark:bg-gray-800 p-6 rounded-3xl shadow-lg border border-violet-100 dark:border-gray-700">
+                  <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-emerald-100 dark:border-gray-700">
                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                       <span className="bg-violet-100 text-violet-700 p-1 rounded-lg">❓</span> 
+                       <span className="bg-emerald-100 text-emerald-800 p-1 rounded-lg">❓</span> 
                        You might also ask...
                      </h3>
                      <div className="flex flex-wrap gap-3">
@@ -446,7 +457,7 @@ export default function Generator() {
                          <button
                            key={idx}
                            onClick={() => { setAction(q); handleGenerate(q); }}
-                           className="text-left text-sm px-4 py-3 rounded-xl bg-gray-50 hover:bg-violet-50 text-gray-700 hover:text-violet-700 border border-gray-200 hover:border-violet-200 transition-all dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:border-gray-600"
+                           className="text-left text-sm px-4 py-3 rounded-lg bg-gray-50 hover:bg-emerald-50 text-gray-700 hover:text-emerald-800 border border-gray-200 hover:border-emerald-200 transition-all dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:border-gray-600"
                          >
                            {q}
                          </button>

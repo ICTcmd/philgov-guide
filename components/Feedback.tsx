@@ -52,7 +52,7 @@ export default function Feedback() {
         </p>
         <form
           onSubmit={handleSubmit}
-          className="space-y-4 bg-white dark:bg-gray-800 p-6 rounded-2xl shadow border border-gray-100 dark:border-gray-700"
+          className="space-y-4 bg-white dark:bg-gray-800 p-6 rounded-lg shadow border border-gray-100 dark:border-gray-700"
         >
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
@@ -64,7 +64,7 @@ export default function Feedback() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-violet-500 focus:border-violet-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
               />
             </div>
             <div>
@@ -76,7 +76,7 @@ export default function Feedback() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-violet-500 focus:border-violet-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
               />
             </div>
           </div>
@@ -90,7 +90,7 @@ export default function Feedback() {
               onChange={(e) => setMessage(e.target.value)}
               rows={4}
               required
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-violet-500 focus:border-violet-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
               placeholder="Tell us what to improve..."
             />
           </div>
@@ -103,7 +103,7 @@ export default function Feedback() {
                 id="rating"
                 value={rating}
                 onChange={(e) => setRating(Number(e.target.value))}
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-xl focus:ring-violet-500 focus:border-violet-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
                 <option value={0}>No rating</option>
                 <option value={1}>1 - Poor</option>
@@ -117,7 +117,7 @@ export default function Feedback() {
               <button
                 type="submit"
                 disabled={status === "sending"}
-                className={`inline-flex justify-center items-center py-3 px-6 text-sm font-bold text-center text-white rounded-xl bg-violet-600 hover:bg-violet-700 focus:ring-4 focus:ring-violet-300 dark:focus:ring-violet-900 shadow transition-all ${status === "sending" ? "opacity-50 cursor-not-allowed" : ""}`}
+                className={`inline-flex justify-center items-center py-3 px-6 text-sm font-bold text-center text-white rounded-lg bg-emerald-700 hover:bg-emerald-800 focus:ring-4 focus:ring-emerald-300 dark:focus:ring-emerald-900 shadow transition-all ${status === "sending" ? "opacity-50 cursor-not-allowed" : ""}`}
               >
                 {status === "sending" ? "Sending..." : "Send Feedback"}
               </button>

@@ -16,7 +16,7 @@ export default function RecentSearches({ searches, onSelect }: RecentSearchesPro
           <button
             key={idx}
             onClick={() => onSelect(item.agency, item.action)}
-            className="text-xs flex items-center gap-1 px-3 py-1.5 rounded-lg bg-violet-50 text-violet-700 border border-violet-100 hover:bg-violet-100 transition-colors dark:bg-gray-700 dark:text-violet-300 dark:border-gray-600"
+            className="text-xs flex items-center gap-1 px-3 py-1.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-100 hover:bg-emerald-100 transition-colors dark:bg-gray-700 dark:text-emerald-300 dark:border-gray-600"
           >
             <svg className="w-3 h-3 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
