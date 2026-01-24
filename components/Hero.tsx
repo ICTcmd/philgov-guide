@@ -193,10 +193,130 @@ const SERVICE_CARDS: ServiceCard[] = [
     btnTextColor: "text-white",
     link: "/?agency=PhilPost#generator",
     category: "Identity"
+  },
+  {
+    id: "barangay",
+    title: "Barangay Services",
+    description: "Clearance & Cedula",
+    logo: "/logos/barangay.svg",
+    logoBg: "bg-gray-100",
+    btnColor: "bg-gray-600",
+    btnHover: "hover:bg-gray-700",
+    btnTextColor: "text-white",
+    link: "/?agency=Barangay#generator",
+    category: "Local"
+  },
+  {
+    id: "dole",
+    title: "DOLE Services",
+    description: "Labor & Employment",
+    logo: "/logos/dole.svg",
+    logoBg: "bg-yellow-50",
+    btnColor: "bg-yellow-600",
+    btnHover: "hover:bg-yellow-700",
+    btnTextColor: "text-white",
+    link: "/?agency=DOLE#generator",
+    category: "Labor"
+  },
+  {
+    id: "tesda",
+    title: "TESDA",
+    description: "Skills & Training",
+    logo: "/logos/tesda.svg",
+    logoBg: "bg-blue-50",
+    btnColor: "bg-blue-600",
+    btnHover: "hover:bg-blue-700",
+    btnTextColor: "text-white",
+    link: "/?agency=TESDA#generator",
+    category: "Education"
+  },
+  {
+    id: "csc",
+    title: "Civil Service",
+    description: "Exams & Eligibility",
+    logo: "/logos/csc.svg",
+    logoBg: "bg-red-50",
+    btnColor: "bg-red-700",
+    btnHover: "hover:bg-red-800",
+    btnTextColor: "text-white",
+    link: "/?agency=CSC#generator",
+    category: "Government"
+  },
+  {
+    id: "dti",
+    title: "DTI Business",
+    description: "Business Registration",
+    logo: "/logos/dti.svg",
+    logoBg: "bg-blue-50",
+    btnColor: "bg-blue-800",
+    btnHover: "hover:bg-blue-900",
+    btnTextColor: "text-white",
+    link: "/?agency=DTI#generator",
+    category: "Business"
+  },
+  {
+    id: "bi",
+    title: "Bureau of Immigration",
+    description: "Visas & Travel",
+    logo: "/logos/bi.svg",
+    logoBg: "bg-green-50",
+    btnColor: "bg-green-700",
+    btnHover: "hover:bg-green-800",
+    btnTextColor: "text-white",
+    link: "/?agency=Bureau%20of%20Immigration#generator",
+    category: "Travel"
+  },
+  {
+    id: "owwa",
+    title: "OWWA",
+    description: "OFW Welfare",
+    logo: "/logos/owwa.svg",
+    logoBg: "bg-teal-50",
+    btnColor: "bg-teal-600",
+    btnHover: "hover:bg-teal-700",
+    btnTextColor: "text-white",
+    link: "/?agency=OWWA#generator",
+    category: "Welfare"
+  },
+  {
+    id: "denr",
+    title: "DENR",
+    description: "Environment & Land",
+    logo: "/logos/denr.svg",
+    logoBg: "bg-green-50",
+    btnColor: "bg-green-800",
+    btnHover: "hover:bg-green-900",
+    btnTextColor: "text-white",
+    link: "/?agency=DENR#generator",
+    category: "Environment"
+  },
+  {
+    id: "gsis",
+    title: "GSIS",
+    description: "Gov't Insurance",
+    logo: "/logos/gsis.svg",
+    logoBg: "bg-blue-50",
+    btnColor: "bg-blue-700",
+    btnHover: "hover:bg-blue-800",
+    btnTextColor: "text-white",
+    link: "/?agency=GSIS#generator",
+    category: "Social Security"
+  },
+  {
+    id: "doh",
+    title: "DOH",
+    description: "Health Services",
+    logo: "/logos/doh.svg",
+    logoBg: "bg-green-50",
+    btnColor: "bg-green-600",
+    btnHover: "hover:bg-green-700",
+    btnTextColor: "text-white",
+    link: "/?agency=DOH#generator",
+    category: "Health"
   }
 ];
 
-const CATEGORIES = ["All", "Social Security", "Identity", "Legal", "Finance", "Welfare", "Professional"];
+const CATEGORIES = ["All", "Social Security", "Identity", "Legal", "Finance", "Welfare", "Professional", "Local", "Labor", "Education", "Government", "Business", "Travel", "Health", "Environment"];
 
 export default function Hero() {
   const [index, setIndex] = useState(0);

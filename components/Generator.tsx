@@ -32,8 +32,116 @@ export default function Generator() {
   const [detectionMethod, setDetectionMethod] = useState<null | 'gps' | 'ip' | 'manual' | 'map'>(null);
   const [recentSearches, setRecentSearches] = useState<Array<{ agency: string, action: string, date: number }>>([]);
   const [loadingMsgIndex, setLoadingMsgIndex] = useState(0);
+  const [geoLoading, setGeoLoading] = useState(false);
+  const [showTerms, setShowTerms] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
+
+  const detectViaIP = async () => {
+    try {
+      const ipRes = await fetch('https://ipapi.co/json/');
+      const ipData = await ipRes.json();
+      const city = ipData.city || '';
+      const region = ipData.region || ipData.province || ipData.country_name || '';
+      const composed = [city, region].filter(Boolean).join(', ');
+      if (composed) {
+        setLocation(composed);
+        setError(null);
+        setDetectionMethod('ip');
+        return composed;
+      } else {
+        setError("Unable to detect location via IP. Please type your city manually.");
+        return null;
+      }
+    } catch {
+      setError("Unable to detect location. Please type your city manually.");
+      return null;
+    }
+  };
+
+  const autoFillLocation = async () => {
+    if (!termsAccepted) {
+      setShowTerms(true);
+      return null;
+    }
+
+    setGeoLoading(true);
+    setError(null);
+
+    if (!navigator.geolocation) {
+      const ipLoc = await detectViaIP();
+      setGeoLoading(false);
+      return ipLoc;
+    }
+
+    try {
+      const precise = await new Promise<{ latitude: number; longitude: number; accuracy: number }>((resolve, reject) => {
+        let best: { latitude: number; longitude: number; accuracy: number } | null = null;
+        const id = navigator.geolocation.watchPosition(
+          (pos) => {
+            const acc = pos.coords.accuracy || 9999;
+            const cur = { latitude: pos.coords.latitude, longitude: pos.coords.longitude, accuracy: acc };
+            if (!best || cur.accuracy < best.accuracy) best = cur;
+            if (cur.accuracy < 50) {
+              navigator.geolocation.clearWatch(id);
+              resolve(cur);
+            }
+          },
+          (err) => {
+            navigator.geolocation.clearWatch(id);
+            reject(err);
+          },
+          { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 }
+        );
+        setTimeout(() => {
+          navigator.geolocation.clearWatch(id);
+          if (best) {
+            resolve(best);
+          } else {
+            reject(new Error("Location timeout"));
+          }
+        }, 10000);
+      });
+
+      const { latitude, longitude } = precise;
+      try {
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&addressdetails=1&zoom=14&lat=${latitude}&lon=${longitude}`;
+        const res = await fetch(url, {
+          headers: {
+            'User-Agent': 'BagoApp/1.0',
+            'Accept': 'application/json'
+          }
+        });
+        const data = await res.json();
+        const a = data?.address || {};
+        const city = a.city || a.municipality || a.town || a.village || a.city_district || '';
+        const province = a.province || a.state || a.region || '';
+        const composed = [city, province].filter(Boolean).join(', ');
+        
+        if (composed) {
+          setLocation(composed);
+          setDetectionMethod('gps');
+          return composed;
+        } else {
+          const loc = `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+          setLocation(loc);
+          setDetectionMethod('gps');
+          return loc;
+        }
+      } catch {
+        const loc = `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+        setLocation(loc);
+        setDetectionMethod('gps');
+        return loc;
+      }
+    } catch (e) {
+      console.warn("GPS failed, using IP fallback", e);
+      const ipLoc = await detectViaIP();
+      return ipLoc;
+    } finally {
+      setGeoLoading(false);
+    }
+  };
 
   // Auto-select agency from URL query param
   useEffect(() => {
@@ -130,8 +238,9 @@ export default function Generator() {
     }
   };
 
-  const handleGenerate = async (overrideAction?: string) => {
+  const handleGenerate = async (overrideAction?: string, overrideLocation?: string) => {
     const currentAction = typeof overrideAction === 'string' ? overrideAction : action;
+    const currentLocation = typeof overrideLocation === 'string' ? overrideLocation : location;
     const trimmedAction = currentAction.trim();
     if (!trimmedAction) {
       setError("Please tell us what you need to do (e.g. \"Renew passport\").");
@@ -146,7 +255,7 @@ export default function Generator() {
     const payload = {
       agency,
       action: trimmedAction,
-      location,
+      location: currentLocation,
       language,
       image,
     };
@@ -297,6 +406,16 @@ export default function Generator() {
                 <option value="PNP">PNP</option>
                 <option value="PRC">PRC</option>
                 <option value="DSWD">DSWD</option>
+                <option value="Barangay">Barangay Services</option>
+                <option value="DOLE">DOLE</option>
+                <option value="TESDA">TESDA</option>
+                <option value="CSC">CSC (Civil Service)</option>
+                <option value="DTI">DTI</option>
+                <option value="Bureau of Immigration">Bureau of Immigration</option>
+                <option value="OWWA">OWWA</option>
+                <option value="DENR">DENR</option>
+                <option value="GSIS">GSIS</option>
+                <option value="DOH">DOH</option>
               </select>
             </div>
             <div className="w-1/3">
@@ -324,7 +443,7 @@ export default function Generator() {
                 {AGENCY_ACTIONS[agency].map((act) => (
                   <button
                     key={act}
-                    onClick={() => { setAction(act); handleGenerate(act); }}
+                    onClick={async () => { setAction(act); const loc = await autoFillLocation(); handleGenerate(act, loc || undefined); }}
                     className="text-left text-xs md:text-sm px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 hover:bg-brand-primary hover:text-white hover:border-brand-primary transition-all shadow-sm font-medium text-gray-700 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-brand-primary"
                   >
                     {act}
@@ -396,6 +515,10 @@ export default function Generator() {
             termsAccepted={termsAccepted}
             setTermsAccepted={setTermsAccepted}
             agency={agency}
+            geoLoading={geoLoading}
+            autoFillLocation={autoFillLocation}
+            showTerms={showTerms}
+            setShowTerms={setShowTerms}
           />
 
           <button

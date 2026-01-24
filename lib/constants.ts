@@ -13,6 +13,16 @@ export const AGENCY_LINKS: Record<string, { homepage?: string; locator?: string;
   'PNP': { homepage: 'https://pnp.gov.ph/', appointment: 'https://pnpclearance.ph/' },
   'PRC': { homepage: 'https://www.prc.gov.ph/', appointment: 'https://online.prc.gov.ph/' },
   'DSWD': { homepage: 'https://www.dswd.gov.ph/', locator: 'https://www.dswd.gov.ph/directory-of-officials/' },
+  'Barangay': { homepage: '', locator: '' },
+  'DOLE': { homepage: 'https://www.dole.gov.ph/', locator: 'https://www.dole.gov.ph/regional-offices/' },
+  'TESDA': { homepage: 'https://www.tesda.gov.ph/', locator: 'https://www.tesda.gov.ph/Directory/Regions' },
+  'CSC': { homepage: 'https://csc.gov.ph/', locator: 'https://csc.gov.ph/contact-us/regional-offices' },
+  'DTI': { homepage: 'https://www.dti.gov.ph/', locator: 'https://www.dti.gov.ph/contact/' },
+  'Bureau of Immigration': { homepage: 'https://immigration.gov.ph/', appointment: 'https://e-services.immigration.gov.ph/' },
+  'OWWA': { homepage: 'https://owwa.gov.ph/', locator: 'https://owwa.gov.ph/contact-us/' },
+  'DENR': { homepage: 'https://www.denr.gov.ph/', locator: 'https://www.denr.gov.ph/index.php/contact-us/regional-offices' },
+  'GSIS': { homepage: 'https://www.gsis.gov.ph/', appointment: 'https://www.gsis.gov.ph/ginhawa-for-all/' },
+  'DOH': { homepage: 'https://doh.gov.ph/', locator: 'https://doh.gov.ph/contact/' }
 };
 
 export const AGENCY_ACTIONS: Record<string, string[]> = {
@@ -112,6 +122,70 @@ export const AGENCY_ACTIONS: Record<string, string[]> = {
     'Initial Registration',
     'Renew Professional ID',
     'Certifications'
+  ],
+  'Barangay': [
+    'Barangay Clearance',
+    'Certificate of Indigency',
+    'Certificate of Residency',
+    'Blotter Report',
+    'Community Tax Cert (Cedula)'
+  ],
+  'DOLE': [
+    'DOLE 174 Registration',
+    'Alien Employment Permit',
+    'Labor Complaint',
+    'TUPAD Application',
+    'SPES Application'
+  ],
+  'TESDA': [
+    'Assessment & Certification',
+    'Scholarship Application',
+    'NCII Assessment',
+    'TVET Enrollment'
+  ],
+  'CSC': [
+    'Civil Service Exam',
+    'Career Service Eligibility',
+    'File Administrative Case',
+    'Honor Graduate Eligibility'
+  ],
+  'DTI': [
+    'Business Name Registration',
+    'DTI Renewal',
+    'Consumer Complaint',
+    'Import Commodity Clearance'
+  ],
+  'Bureau of Immigration': [
+    'Visa Extension',
+    'ACR I-Card',
+    'Exit Clearance',
+    'Dual Citizenship',
+    'Student Visa'
+  ],
+  'OWWA': [
+    'OWWA Membership',
+    'OEC Application',
+    'Balik Pinas Program',
+    'Scholarship Application'
+  ],
+  'DENR': [
+    'Environmental Compliance (ECC)',
+    'Tree Cutting Permit',
+    'Land Titling',
+    'Chainsaw Registration'
+  ],
+  'GSIS': [
+    'Apply for GSIS Loan',
+    'Retirement Benefit',
+    'UMID Card (GSIS)',
+    'Life Insurance Claim',
+    'Pension Loan'
+  ],
+  'DOH': [
+    'Medical Assistance',
+    'FDA License to Operate',
+    'Health Facility License',
+    'Doctor to the Barrios'
   ]
 };
 

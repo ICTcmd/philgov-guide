@@ -10,6 +10,10 @@ interface LocationPickerProps {
   termsAccepted: boolean;
   setTermsAccepted: (accepted: boolean) => void;
   agency: string;
+  geoLoading: boolean;
+  autoFillLocation: () => Promise<string | null>;
+  showTerms: boolean;
+  setShowTerms: (show: boolean) => void;
 }
 
 type LatLng = { lat: number; lng: number };
@@ -39,109 +43,14 @@ export default function LocationPicker({
   setError,
   termsAccepted,
   setTermsAccepted,
-  agency
+  agency,
+  geoLoading,
+  autoFillLocation,
+  showTerms,
+  setShowTerms
 }: LocationPickerProps) {
-  const [geoLoading, setGeoLoading] = useState(false);
-  const [showTerms, setShowTerms] = useState(false);
   const [showMapPicker, setShowMapPicker] = useState(false);
   const [mapStatus, setMapStatus] = useState<string>('');
-
-  const detectViaIP = async () => {
-    try {
-      const ipRes = await fetch('https://ipapi.co/json/');
-      const ipData = await ipRes.json();
-      const city = ipData.city || '';
-      const region = ipData.region || ipData.province || ipData.country_name || '';
-      const composed = [city, region].filter(Boolean).join(', ');
-      if (composed) {
-        setLocation(composed);
-        setError(null);
-        setDetectionMethod('ip');
-      } else {
-        setError("Unable to detect location via IP. Please type your city manually.");
-      }
-    } catch {
-      setError("Unable to detect location. Please type your city manually.");
-    }
-  };
-
-  const autoFillLocation = async () => {
-    if (!termsAccepted) {
-      setShowTerms(true);
-      return;
-    }
-
-    setGeoLoading(true);
-    setError(null);
-
-    if (!navigator.geolocation) {
-      await detectViaIP();
-      setGeoLoading(false);
-      return;
-    }
-
-    try {
-      const precise = await new Promise<{ latitude: number; longitude: number; accuracy: number }>((resolve, reject) => {
-        let best: { latitude: number; longitude: number; accuracy: number } | null = null;
-        const id = navigator.geolocation.watchPosition(
-          (pos) => {
-            const acc = pos.coords.accuracy || 9999;
-            const cur = { latitude: pos.coords.latitude, longitude: pos.coords.longitude, accuracy: acc };
-            if (!best || cur.accuracy < best.accuracy) best = cur;
-            if (cur.accuracy < 50) {
-              navigator.geolocation.clearWatch(id);
-              resolve(cur);
-            }
-          },
-          (err) => {
-            navigator.geolocation.clearWatch(id);
-            reject(err);
-          },
-          { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 }
-        );
-        setTimeout(() => {
-          navigator.geolocation.clearWatch(id);
-          if (best) {
-            resolve(best);
-          } else {
-            reject(new Error("Location timeout"));
-          }
-        }, 10000);
-      });
-
-      const { latitude, longitude } = precise;
-      try {
-        const url = `https://nominatim.openstreetmap.org/reverse?format=json&addressdetails=1&zoom=14&lat=${latitude}&lon=${longitude}`;
-        const res = await fetch(url, {
-          headers: {
-            'User-Agent': 'BagoApp/1.0',
-            'Accept': 'application/json'
-          }
-        });
-        const data = await res.json();
-        const a = data?.address || {};
-        const city = a.city || a.municipality || a.town || a.village || a.city_district || '';
-        const province = a.province || a.state || a.region || '';
-        const composed = [city, province].filter(Boolean).join(', ');
-        
-        if (composed) {
-          setLocation(composed);
-          setDetectionMethod('gps');
-        } else {
-          setLocation(`${latitude.toFixed(5)}, ${longitude.toFixed(5)}`);
-          setDetectionMethod('gps');
-        }
-      } catch {
-        setLocation(`${latitude.toFixed(5)}, ${longitude.toFixed(5)}`);
-        setDetectionMethod('gps');
-      }
-    } catch (e) {
-      console.warn("GPS failed, using IP fallback", e);
-      await detectViaIP();
-    } finally {
-      setGeoLoading(false);
-    }
-  };
 
   const refineTypedLocation = async () => {
     if (!location.trim()) {
