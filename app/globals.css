@@ -22,6 +22,9 @@
   --font-mono: var(--font-geist-mono);
   --font-display: var(--font-fredoka);
   --font-playfair: var(--font-playfair);
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-accent: var(--brand-accent);
 }
 
 html {
