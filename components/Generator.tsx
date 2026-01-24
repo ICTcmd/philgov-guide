@@ -544,7 +544,7 @@ export default function Generator() {
           <button
             onClick={() => handleGenerate()}
             disabled={loading || !action.trim()}
-            className={`w-full relative text-white bg-brand-primary hover:bg-brand-secondary focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-base px-5 py-3.5 mr-2 mb-2 dark:bg-brand-primary dark:hover:bg-brand-secondary focus:outline-none dark:focus:ring-blue-900 shadow-lg btn-hover-effect overflow-hidden ${
+            className={`w-full relative text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-base px-5 py-3.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-900 shadow-lg btn-hover-effect overflow-hidden ${
               (loading || !action.trim()) ? 'opacity-90 cursor-wait' : ''
             }`}
           >

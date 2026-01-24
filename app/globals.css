@@ -25,18 +25,13 @@
   --color-brand-primary: var(--brand-primary);
   --color-brand-secondary: var(--brand-secondary);
   --color-brand-accent: var(--brand-accent);
+  --color-gov-red: var(--gov-red);
+  --color-gov-yellow: var(--gov-yellow);
+  --color-gov-green: var(--gov-green);
 }
 
 html {
   overflow-y: scroll;
-}
-
-.dark { --color-brand-primary: var(--brand-primary);
-  --color-brand-secondary: var(--brand-secondary);
-  --color-brand-accent: var(--brand-accent);
-  --color-gov-red: var(--gov-red);
-  --color-gov-yellow: var(--gov-yellow);
-  --color-gov-green: var(--gov-green);
 }
 
 .dark {
