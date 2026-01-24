@@ -198,7 +198,7 @@ const SERVICE_CARDS: ServiceCard[] = [
     id: "barangay",
     title: "Barangay Services",
     description: "Clearance & Cedula",
-    logo: "https://commons.wikimedia.org/wiki/Special:FilePath/Liga_ng_mga_Barangay_sa_Pilipinas.svg",
+    logo: "/logos/barangay.svg",
     logoBg: "bg-gray-100",
     btnColor: "bg-gray-600",
     btnHover: "hover:bg-gray-700",
