@@ -13,6 +13,9 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     "jest.config.js",
+    "download_logos.js",
+    "get_urls.js",
+    "get_philpost_url.js",
   ]),
 ]);
 

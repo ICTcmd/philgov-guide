@@ -219,16 +219,30 @@ export default function Generator() {
 
   const handleVoiceInput = () => {
     if (typeof window !== 'undefined' && ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-      const recognition = new SpeechRecognition();
+      const RecCtor =
+        (window as unknown as { SpeechRecognition?: new () => unknown; webkitSpeechRecognition?: new () => unknown })
+          .SpeechRecognition ||
+        (window as unknown as { SpeechRecognition?: new () => unknown; webkitSpeechRecognition?: new () => unknown })
+          .webkitSpeechRecognition;
+      if (!RecCtor) return;
+      const recognition = new RecCtor() as unknown as {
+        lang: string;
+        interimResults: boolean;
+        maxAlternatives: number;
+        onstart: () => void;
+        onend: () => void;
+        onresult: (event: unknown) => void;
+        start: () => void;
+      };
       recognition.lang = 'en-PH';
       recognition.interimResults = false;
       recognition.maxAlternatives = 1;
 
       recognition.onstart = () => setIsListening(true);
       recognition.onend = () => setIsListening(false);
-      recognition.onresult = (event: any) => {
-        const transcript = event.results[0][0].transcript;
+      recognition.onresult = (event: unknown) => {
+        const e = event as { results: Array<Array<{ transcript: string }>> };
+        const transcript = e.results[0][0].transcript;
         setAction(transcript);
       };
       
@@ -486,7 +500,7 @@ export default function Generator() {
               <label htmlFor="dropzone-file" className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 transition-all">
                 {image ? (
                   <div className="relative w-full h-full p-2">
-                    <img src={image} alt="Preview" className="w-full h-full object-contain rounded-lg" />
+                    <Image src={image} alt="Preview" fill className="object-contain rounded-lg" unoptimized />
                     <button 
                       onClick={(e) => { e.preventDefault(); setImage(null); }}
                       className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600"
