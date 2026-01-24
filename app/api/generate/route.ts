@@ -166,7 +166,7 @@ export async function POST(req: Request) {
           temperature: 0.4, // Lower temperature for more factual responses
           topK: 40,
           topP: 0.95,
-          maxOutputTokens: 2048,
+          maxOutputTokens: 8192,
         },
         safetySettings: [
           { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },

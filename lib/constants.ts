@@ -21,7 +21,7 @@ export const AGENCY_LINKS: Record<string, { homepage?: string; locator?: string;
   'Bureau of Immigration': { homepage: 'https://immigration.gov.ph/', appointment: 'https://e-services.immigration.gov.ph/' },
   'OWWA': { homepage: 'https://owwa.gov.ph/', locator: 'https://owwa.gov.ph/contact-us/' },
   'DENR': { homepage: 'https://www.denr.gov.ph/', locator: 'https://www.denr.gov.ph/index.php/contact-us/regional-offices' },
-  'GSIS': { homepage: 'https://www.gsis.gov.ph/', appointment: 'https://www.gsis.gov.ph/ginhawa-for-all/' },
+  'GSIS': { homepage: 'https://www.gsis.gov.ph/', locator: 'https://www.gsis.gov.ph/contact-us/branch-offices/', appointment: 'https://www.gsis.gov.ph/ginhawa-for-all/' },
   'DOH': { homepage: 'https://doh.gov.ph/', locator: 'https://doh.gov.ph/contact/' }
 };
 

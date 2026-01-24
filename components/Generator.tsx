@@ -320,11 +320,17 @@ export default function Generator() {
       let extractedQuestions: string[] = [];
 
       // 1. Primary: Look for hidden <<<FOLLOWUPS>>> block
-      const followUpMatch = finalResult.match(/<<<FOLLOWUPS>>>([\s\S]*?)<<<END_FOLLOWUPS>>>/);
+      let followUpMatch = finalResult.match(/<<<FOLLOWUPS>>>([\s\S]*?)<<<END_FOLLOWUPS>>>/);
+      
+      // 1b. Fallback: Look for <<<FOLLOWUPS>>> to end of string (if truncated)
+      if (!followUpMatch) {
+         followUpMatch = finalResult.match(/<<<FOLLOWUPS>>>([\s\S]*)$/);
+      }
+
       if (followUpMatch) {
         extractedQuestions = followUpMatch[1].trim().split('\n').filter(q => q.trim().length > 0);
-        // Remove the follow-up block from the displayed result
-        finalResult = finalResult.replace(/<<<FOLLOWUPS>>>[\s\S]*?<<<END_FOLLOWUPS>>>/, '').trim();
+        // Remove the follow-up block from the displayed result (handle both complete and partial cases)
+        finalResult = finalResult.replace(/<<<FOLLOWUPS>>>[\s\S]*/, '').trim();
       }
 
       // 2. Fallback: Look for "Follow-up Questions" header (Visible Text)
