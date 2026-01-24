@@ -189,7 +189,7 @@ export default function LocationPicker({
         <button
           onClick={autoFillLocation}
           disabled={geoLoading}
-          className={`text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 btn-hover-effect ${geoLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+          className={`text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:ring-orange-300 font-medium rounded-lg text-sm px-4 py-2.5 dark:bg-orange-500 dark:hover:bg-orange-600 btn-hover-effect ${geoLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
         >
           {geoLoading ? 'Detecting…' : 'Use my location'}
         </button>
@@ -227,20 +227,20 @@ export default function LocationPicker({
         </label>
       </div>
       <div className="mt-4 p-4 rounded-lg border border-gray-100 bg-gray-50 dark:border-gray-700 dark:bg-gray-800/50">
-        <p className="text-sm font-bold text-gray-900 dark:text-blue-300">Quick Links</p>
+        <p className="text-sm font-bold text-gray-900 dark:text-orange-300">Quick Links</p>
         <div className="mt-2 flex flex-wrap gap-2">
           {AGENCY_LINKS[agency]?.homepage && (
-            <a href={AGENCY_LINKS[agency].homepage} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-full bg-white text-brand-primary border border-gray-100 hover:bg-blue-50 dark:bg-gray-700 dark:text-blue-300 dark:border-gray-600 transition-colors">
+            <a href={AGENCY_LINKS[agency].homepage} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-full bg-white text-brand-primary border border-gray-100 hover:bg-orange-50 dark:bg-gray-700 dark:text-orange-300 dark:border-gray-600 transition-colors">
               Official Site
             </a>
           )}
           {AGENCY_LINKS[agency]?.locator && (
-            <a href={AGENCY_LINKS[agency].locator} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-full bg-white text-brand-primary border border-gray-100 hover:bg-blue-50 dark:bg-gray-700 dark:text-blue-300 dark:border-gray-600 transition-colors">
+            <a href={AGENCY_LINKS[agency].locator} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-full bg-white text-brand-primary border border-gray-100 hover:bg-orange-50 dark:bg-gray-700 dark:text-orange-300 dark:border-gray-600 transition-colors">
               Branch Locator
             </a>
           )}
           {AGENCY_LINKS[agency]?.appointment && (
-            <a href={AGENCY_LINKS[agency].appointment} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-full bg-white text-brand-primary border border-gray-100 hover:bg-blue-50 dark:bg-gray-700 dark:text-blue-300 dark:border-gray-600 transition-colors">
+            <a href={AGENCY_LINKS[agency].appointment} target="_blank" rel="noopener noreferrer" className="text-xs px-3 py-1.5 rounded-full bg-white text-brand-primary border border-gray-100 hover:bg-orange-50 dark:bg-gray-700 dark:text-orange-300 dark:border-gray-600 transition-colors">
               Appointment
             </a>
           )}

@@ -359,7 +359,7 @@ export default function Hero() {
                </h1>
              </div>
           ) : (
-            <h1 key={index} className="text-4xl md:text-5xl lg:text-6xl font-extrabold font-display text-blue-900 dark:text-blue-400 animate-slide-up-fade text-center px-4 tracking-tight leading-tight">
+            <h1 key={index} className="text-4xl md:text-5xl lg:text-6xl font-extrabold font-display text-orange-900 dark:text-orange-400 animate-slide-up-fade text-center px-4 tracking-tight leading-tight">
               {HEADLINES[index]}
             </h1>
           )}

@@ -383,7 +383,7 @@ export default function Generator() {
               priority
             />
            </div>
-           <h2 className="text-5xl md:text-6xl tracking-tight font-extrabold text-blue-900 dark:text-white">
+           <h2 className="text-5xl md:text-6xl tracking-tight font-extrabold text-orange-900 dark:text-white">
             BAGO APP
           </h2>
         </div>
@@ -544,7 +544,7 @@ export default function Generator() {
           <button
             onClick={() => handleGenerate()}
             disabled={loading || !action.trim()}
-            className={`w-full relative text-white bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-base px-5 py-3.5 mr-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-900 shadow-lg btn-hover-effect overflow-hidden ${
+            className={`w-full relative text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:ring-orange-300 font-bold rounded-lg text-base px-5 py-3.5 mr-2 mb-2 dark:bg-orange-500 dark:hover:bg-orange-600 focus:outline-none dark:focus:ring-orange-800 shadow-lg btn-hover-effect overflow-hidden ${
               (loading || !action.trim()) ? 'opacity-90 cursor-wait' : ''
             }`}
           >
@@ -582,9 +582,9 @@ export default function Generator() {
                 />
                 
                 {followUps.length > 0 && (
-                  <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-blue-100 dark:border-gray-700">
+                  <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg border border-orange-100 dark:border-gray-700">
                      <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2">
-                       <span className="bg-blue-100 text-blue-700 p-1 rounded-lg">❓</span> 
+                       <span className="bg-orange-100 text-orange-700 p-1 rounded-lg">❓</span> 
                        You might also ask...
                      </h3>
                      <div className="flex flex-wrap gap-3">
@@ -592,7 +592,7 @@ export default function Generator() {
                          <button
                            key={idx}
                            onClick={() => { setAction(q); handleGenerate(q); }}
-                           className="text-left text-sm px-4 py-3 rounded-lg bg-gray-50 hover:bg-blue-50 text-gray-700 hover:text-blue-700 border border-gray-200 hover:border-blue-200 btn-hover-effect dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:border-gray-600"
+                           className="text-left text-sm px-4 py-3 rounded-lg bg-gray-50 hover:bg-orange-50 text-gray-700 hover:text-orange-700 border border-gray-200 hover:border-orange-200 btn-hover-effect dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600 dark:border-gray-600"
                          >
                            {q}
                          </button>

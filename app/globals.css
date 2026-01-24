@@ -6,10 +6,10 @@
   --background: #fff7ed;
   --foreground: #0f172a;
   
-  /* BAGO APP Brand Colors - Restored Blue Theme with Orange Background */
-  --brand-primary: #2563eb; /* Blue 600 - Main Action */
-  --brand-secondary: #1e40af; /* Blue 800 - Deep Contrast */
-  --brand-accent: #eff6ff; /* Blue 50 - Backgrounds */
+  /* BAGO APP Brand Colors - Orange Theme */
+  --brand-primary: #f97316; /* Orange 500 - Main Action */
+  --brand-secondary: #c2410c; /* Orange 700 - Deep Contrast */
+  --brand-accent: #ffedd5; /* Orange 100 - Backgrounds */
   --gov-red: #dc2626; /* Keep for alerts */
   --gov-yellow: #facc15; /* Keep for warnings */
   --gov-green: #15803d; /* Keep for success */
