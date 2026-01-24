@@ -18,7 +18,7 @@ export const AGENCY_LINKS: Record<string, { homepage?: string; locator?: string;
   'TESDA': { homepage: 'https://www.tesda.gov.ph/', locator: 'https://www.tesda.gov.ph/Directory/Regions' },
   'CSC': { homepage: 'https://csc.gov.ph/', locator: 'https://csc.gov.ph/contact-us/regional-offices' },
   'DTI': { homepage: 'https://www.dti.gov.ph/', locator: 'https://www.dti.gov.ph/contact/' },
-  'Bureau of Immigration': { homepage: 'https://immigration.gov.ph/', appointment: 'https://e-services.immigration.gov.ph/' },
+  'Bureau of Immigration': { homepage: 'https://immigration.gov.ph/', locator: 'https://immigration.gov.ph/contacts/', appointment: 'https://e-services.immigration.gov.ph/' },
   'OWWA': { homepage: 'https://owwa.gov.ph/', locator: 'https://owwa.gov.ph/contact-us/' },
   'DENR': { homepage: 'https://www.denr.gov.ph/', locator: 'https://www.denr.gov.ph/index.php/contact-us/regional-offices' },
   'GSIS': { homepage: 'https://www.gsis.gov.ph/', locator: 'https://www.gsis.gov.ph/contact-us/branch-offices/', appointment: 'https://www.gsis.gov.ph/ginhawa-for-all/' },
