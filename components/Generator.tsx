@@ -150,10 +150,18 @@ export default function Generator() {
       // Decode URI component just in case, though searchParams.get usually handles it
       setAgency(decodeURIComponent(agencyParam));
       
-      // Optional: Auto-scroll to generator if param exists (handles direct link visits)
+      // Auto-scroll to generator if param exists (handles direct link visits)
       const element = document.getElementById('generator');
       if (element) {
         element.scrollIntoView({ behavior: 'smooth' });
+      }
+
+      // Clean URL so refresh doesn't scroll down again
+      if (typeof window !== 'undefined') {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('agency');
+        url.hash = '';
+        window.history.replaceState({}, '', url.toString());
       }
     }
   }, [searchParams]);
