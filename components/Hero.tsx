@@ -386,13 +386,13 @@ export default function Hero() {
                 key={cat}
                 onClick={() => {
                   setSelectedCategory(cat);
-                  // Auto-scroll to service cards on mobile view
-                  if (typeof window !== 'undefined' && window.innerWidth < 768) {
+                  // Auto-scroll to service cards (with slight delay for render)
+                  setTimeout(() => {
                     const element = document.getElementById('service-cards');
                     if (element) {
-                      element.scrollIntoView({ behavior: 'smooth' });
+                      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
                     }
-                  }
+                  }, 100);
                 }}
                 className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
                   selectedCategory === cat
