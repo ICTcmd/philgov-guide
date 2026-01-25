@@ -7,6 +7,7 @@ import { LOADING_MESSAGES, AGENCY_ACTIONS } from '@/lib/constants';
 import LocationPicker from './LocationPicker';
 import ResultCard from './ResultCard';
 import RecentSearches from './RecentSearches';
+import SavedGuidesList from './SavedGuidesList';
 import LoadingSkeleton from './LoadingSkeleton';
 import { ThemeToggle } from './ThemeToggle';
 import { Image as ImageIcon, X, Mic } from 'lucide-react';
@@ -31,6 +32,7 @@ export default function Generator() {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [detectionMethod, setDetectionMethod] = useState<null | 'gps' | 'ip' | 'manual' | 'map'>(null);
   const [recentSearches, setRecentSearches] = useState<Array<{ agency: string, action: string, date: number }>>([]);
+  const [savedGuides, setSavedGuides] = useState<Array<{ agency: string, action: string, result: string, date: number }>>([]);
   const [loadingMsgIndex, setLoadingMsgIndex] = useState(0);
   const [geoLoading, setGeoLoading] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
@@ -187,7 +189,35 @@ export default function Generator() {
         console.error("Failed to parse recent searches", e);
       }
     }
+    loadSavedGuides();
   }, []);
+
+  const loadSavedGuides = () => {
+    const saved = localStorage.getItem('savedGuides');
+    if (saved) {
+      try {
+        setSavedGuides(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to parse saved guides", e);
+      }
+    }
+  };
+
+  const handleSavedGuideSelect = (guide: { agency: string, action: string, result: string }) => {
+    setAgency(guide.agency);
+    setAction(guide.action);
+    setResult(guide.result);
+    // Auto-scroll
+    setTimeout(() => {
+      resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  };
+
+  const handleSavedGuideDelete = (guide: any) => {
+    const updated = savedGuides.filter(g => !(g.agency === guide.agency && g.action === guide.action));
+    setSavedGuides(updated);
+    localStorage.setItem('savedGuides', JSON.stringify(updated));
+  };
 
   const addToRecent = (newAgency: string, newAction: string) => {
     const newItem = { agency: newAgency, action: newAction, date: Date.now() };
@@ -403,6 +433,11 @@ export default function Generator() {
       <div className="flex flex-col gap-8 max-w-4xl mx-auto">
         {/* Input Section */}
         <div className="w-full space-y-5 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
+          <SavedGuidesList 
+            guides={savedGuides}
+            onSelect={handleSavedGuideSelect}
+            onDelete={handleSavedGuideDelete}
+          />
           <RecentSearches 
             searches={recentSearches} 
             onSelect={(a, act) => { setAgency(a); setAction(act); }} 
@@ -587,6 +622,7 @@ export default function Generator() {
                   agency={agency} 
                   action={action} 
                   isMock={isMock} 
+                  onGuideUpdate={loadSavedGuides}
                 />
                 
                 {followUps.length > 0 && (
