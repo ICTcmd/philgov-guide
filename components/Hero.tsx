@@ -386,13 +386,20 @@ export default function Hero() {
                 key={cat}
                 onClick={() => {
                   setSelectedCategory(cat);
-                  // Auto-scroll to service cards (with slight delay for render)
+                  // Auto-scroll with explicit offset calculation for better mobile reliability
                   setTimeout(() => {
                     const element = document.getElementById('service-cards');
                     if (element) {
-                      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      const offset = 100; // Adjust for sticky navbar
+                      const elementPosition = element.getBoundingClientRect().top;
+                      const offsetPosition = elementPosition + window.scrollY - offset;
+                      
+                      window.scrollTo({
+                        top: offsetPosition,
+                        behavior: 'smooth'
+                      });
                     }
-                  }, 100);
+                  }, 300); // Increased delay to ensure render completes
                 }}
                 className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
                   selectedCategory === cat
