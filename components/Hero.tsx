@@ -414,6 +414,7 @@ export default function Hero() {
         </div>
         
         {/* Popular Service Cards Preview (Filtered) */}
+        <div id="service-cards" className="scroll-mt-32">
         {filteredCards.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 text-left max-w-6xl mx-auto mt-8">
             {filteredCards.map((card) => (
@@ -443,6 +444,7 @@ export default function Hero() {
             </button>
           </div>
         )}
+        </div>
       </div>
     </section>
   );
