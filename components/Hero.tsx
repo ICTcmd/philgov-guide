@@ -384,7 +384,16 @@ export default function Hero() {
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
-                onClick={() => setSelectedCategory(cat)}
+                onClick={() => {
+                  setSelectedCategory(cat);
+                  // Auto-scroll to service cards on mobile view
+                  if (typeof window !== 'undefined' && window.innerWidth < 768) {
+                    const element = document.getElementById('service-cards');
+                    if (element) {
+                      element.scrollIntoView({ behavior: 'smooth' });
+                    }
+                  }
+                }}
                 className={`px-4 py-2 text-sm font-medium rounded-full transition-colors ${
                   selectedCategory === cat
                     ? "bg-orange-500 text-white shadow-md"
