@@ -228,13 +228,16 @@ export default function LocationPicker({
         Where are you located? (City/Province)
       </label>
       <input
-        id="location-input"
         type="text"
+        id="location-input"
+        className="bg-gray-50 border border-gray-200 text-gray-900 text-base sm:text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-4 pl-10 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
+        placeholder="e.g. Bago City, Bacolod, Manila"
         value={location}
-        onChange={(e) => setLocation(e.target.value)}
-        onBlur={refineTypedLocation}
-        className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
-        placeholder="e.g. Quezon City, Cebu, Davao (Optional)"
+        onChange={(e) => {
+          setLocation(e.target.value);
+          setDetectionMethod('manual');
+        }}
+        disabled={geoLoading}
       />
       <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
         We&#39;ll use this to help you find the nearest office.

@@ -463,13 +463,13 @@ export default function Generator() {
               <span className="bg-brand-primary text-white w-5 h-5 rounded-full flex items-center justify-center text-xs">1</span>
               Select Agency
             </label>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2">
             <div className="relative flex-1">
               <select
                 id="agency-select"
                 value={agency}
                 onChange={(e) => setAgency(e.target.value)}
-                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
+                className="bg-gray-50 border border-gray-200 text-gray-900 text-base sm:text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
               >
                 <option value="DFA (Passport)">DFA (Passport)</option>
                 <option value="LTO (Driver’s License/Car)">LTO (Driver’s License)</option>
@@ -497,17 +497,18 @@ export default function Generator() {
                 <option value="DOH">DOH</option>
               </select>
             </div>
-            <div className="w-1/3">
+            <div className="w-full sm:w-1/3">
                <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
-                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
-               >
-                 <option value="taglish">Taglish 🇵🇭</option>
-                 <option value="english">English 🇺🇸</option>
-                 <option value="tagalog">Tagalog (Pure)</option>
-                 <option value="cebuano">Cebuano (Bisaya)</option>
-               </select>
+                className="bg-gray-50 border border-gray-200 text-gray-900 text-base sm:text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-3 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white"
+              >
+                <option value="english">English</option>
+                <option value="taglish">Taglish (Conversational)</option>
+                <option value="tagalog">Tagalog</option>
+                <option value="hiligaynon">Hiligaynon (Ilonggo)</option>
+                <option value="cebuano">Cebuano (Bisaya)</option>
+              </select>
             </div>
             </div>
           </div>
@@ -519,37 +520,37 @@ export default function Generator() {
                 <span className="bg-brand-primary text-white w-5 h-5 rounded-full flex items-center justify-center text-xs">2</span>
                 Available Services for {agency.split('(')[0].trim()}
               </label>
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                {AGENCY_ACTIONS[agency].map((act) => (
-                  <button
-                    key={act}
-                    onClick={async () => { 
-                      setAction(act); 
-                      
-                      if (!termsAccepted) {
-                        setPendingQuickAction(act);
-                        setShowTerms(true);
-                        return;
-                      }
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+            {AGENCY_ACTIONS[agency].map((act) => (
+              <button
+                key={act}
+                onClick={async () => { 
+                  setAction(act); 
+                  
+                  if (!termsAccepted) {
+                    setPendingQuickAction(act);
+                    setShowTerms(true);
+                    return;
+                  }
 
-                      const loc = await autoFillLocation(); 
-                      if (loc) {
-                        handleGenerate(act, loc);
-                      } else {
-                        // If location detection fails, open map picker to let user pin location
-                        setShowMapPicker(true);
-                      }
-                    }}
-                    className={`text-left text-xs md:text-sm px-4 py-3 rounded-lg border transition-all shadow-sm font-medium 
-                      ${action === act 
-                        ? 'bg-brand-primary text-white border-brand-primary ring-2 ring-orange-200' 
-                        : 'border-gray-200 bg-white hover:bg-orange-100 hover:text-orange-900 hover:border-orange-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600'
-                      }`}
-                  >
-                    {act}
-                  </button>
-                ))}
-              </div>
+                  const loc = await autoFillLocation(); 
+                  if (loc) {
+                    handleGenerate(act, loc);
+                  } else {
+                    // If location detection fails, open map picker to let user pin location
+                    setShowMapPicker(true);
+                  }
+                }}
+                className={`text-left text-sm px-4 py-4 rounded-lg border transition-all shadow-sm font-medium touch-manipulation
+                  ${action === act 
+                    ? 'bg-brand-primary text-white border-brand-primary ring-2 ring-orange-200' 
+                    : 'border-gray-200 bg-white hover:bg-orange-100 hover:text-orange-900 hover:border-orange-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600'
+                  }`}
+              >
+                {act}
+              </button>
+            ))}
+          </div>
             </div>
           )}
 
@@ -560,12 +561,12 @@ export default function Generator() {
             </label>
             <div className="relative">
               <input
-                id="action-input"
                 type="text"
+                id="action-input"
+                className="bg-gray-50 border border-gray-200 text-gray-900 text-base sm:text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-4 pr-12 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
+                placeholder="e.g. How to renew passport, SSS loan requirements..."
                 value={action}
                 onChange={(e) => setAction(e.target.value)}
-                className="bg-gray-50 border border-gray-200 text-gray-900 text-sm rounded-lg focus:ring-brand-primary focus:border-brand-primary block w-full p-3 pr-12 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white transition-shadow"
-                placeholder="e.g. Renew passport, Apply for TIN, Lost ID"
               />
               <button
                 type="button"
