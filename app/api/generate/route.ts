@@ -248,6 +248,7 @@ export async function POST(req: Request) {
     }
 
     // Provider selection: prefer Google, fall back to OpenAI, else Mock
+    let lastError = "";
     if (googleKey || openaiKey) {
       try {
         generatedContent = googleKey ? await tryGoogle() : await tryOpenAI();
@@ -255,16 +256,18 @@ export async function POST(req: Request) {
         if (generatedContent) {
            cacheService.set(cacheKey, generatedContent);
         }
-      } catch (err) {
+      } catch (err: any) {
         console.warn("Primary provider failed, attempting fallback:", err);
+        lastError = err.message || String(err);
         if (googleKey && openaiKey) {
           try {
             generatedContent = await tryOpenAI();
             if (generatedContent) {
                cacheService.set(cacheKey, generatedContent);
             }
-          } catch (err2) {
+          } catch (err2: any) {
             console.error("Fallback provider failed:", err2);
+            lastError = err2.message || String(err2);
           }
         }
       }
@@ -273,7 +276,7 @@ export async function POST(req: Request) {
     if (!generatedContent) {
       // Fallback to Mock if no Key or if Generation Failed
       const hasKeys = !!(googleKey || openaiKey);
-      const statusMsg = hasKeys ? "[MOCK MODE: API Generation Failed]" : "[MOCK MODE: No API Key Detected]";
+      const statusMsg = hasKeys ? `[MOCK MODE: API Generation Failed - ${lastError}]` : "[MOCK MODE: No API Key Detected]";
       console.log(`API: Using Mock Mode (${statusMsg})`);
       
       generatedContent = `${statusMsg}
