@@ -70,10 +70,17 @@ export default function Generator() {
     setGeoLoading(true);
     setError(null);
 
-    if (!navigator.geolocation) {
-      const ipLoc = await detectViaIP();
+    // Default to Bago City if GPS fails or is unavailable
+    const useDefaultLocation = () => {
+      const defaultLoc = "Bago City, Negros Occidental";
+      setLocation(defaultLoc);
+      setDetectionMethod('manual');
       setGeoLoading(false);
-      return ipLoc;
+      return defaultLoc;
+    };
+
+    if (!navigator.geolocation) {
+      return useDefaultLocation();
     }
 
     try {
@@ -93,55 +100,38 @@ export default function Generator() {
             navigator.geolocation.clearWatch(id);
             reject(err);
           },
-          { enableHighAccuracy: true, maximumAge: 0, timeout: 20000 }
+          { enableHighAccuracy: true, maximumAge: 0, timeout: 10000 }
         );
         setTimeout(() => {
           navigator.geolocation.clearWatch(id);
           if (best) {
             resolve(best);
           } else {
-            reject(new Error("Location timeout"));
+            // Timeout - fallback to default
+            reject(new Error("Timeout"));
           }
-        }, 10000);
+        }, 5000); // Reduced timeout for better UX
       });
 
-      const { latitude, longitude } = precise;
-      try {
-        const url = `https://nominatim.openstreetmap.org/reverse?format=json&addressdetails=1&zoom=14&lat=${latitude}&lon=${longitude}`;
-        const res = await fetch(url, {
-          headers: {
-            'User-Agent': 'BagoApp/1.0',
-            'Accept': 'application/json'
-          }
-        });
-        const data = await res.json();
-        const a = data?.address || {};
-        const city = a.city || a.municipality || a.town || a.village || a.city_district || '';
-        const province = a.province || a.state || a.region || '';
-        const composed = [city, province].filter(Boolean).join(', ');
-        
-        if (composed) {
-          setLocation(composed);
-          setDetectionMethod('gps');
-          return composed;
-        } else {
-          const loc = `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
-          setLocation(loc);
-          setDetectionMethod('gps');
-          return loc;
-        }
-      } catch {
-        const loc = `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
-        setLocation(loc);
+      const res = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${precise.latitude}&lon=${precise.longitude}`);
+      const data = await res.json();
+      const addr = data.address || {};
+      const city = addr.city || addr.town || addr.village || addr.municipality || '';
+      const province = addr.province || addr.state || addr.region || '';
+      const composed = [city, province].filter(Boolean).join(', ');
+      
+      if (composed) {
+        setLocation(composed);
         setDetectionMethod('gps');
-        return loc;
+        setGeoLoading(false);
+        return composed;
+      } else {
+        return useDefaultLocation();
       }
     } catch (e) {
-      console.warn("GPS failed, using IP fallback", e);
-      const ipLoc = await detectViaIP();
-      return ipLoc;
-    } finally {
-      setGeoLoading(false);
+      // On error (denied, timeout, etc), use default Bago City location instead of IP
+      console.log("GPS failed, using default location");
+      return useDefaultLocation();
     }
   };
 
