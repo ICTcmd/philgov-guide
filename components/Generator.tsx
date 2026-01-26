@@ -10,7 +10,7 @@ import RecentSearches from './RecentSearches';
 import SavedGuidesList from './SavedGuidesList';
 import LoadingSkeleton from './LoadingSkeleton';
 import { ThemeToggle } from './ThemeToggle';
-import { Image as ImageIcon, X, Mic } from 'lucide-react';
+import { Image as ImageIcon, X, Mic, ArrowLeft } from 'lucide-react';
 
 type GenerateResponse = {
   result?: string;
@@ -195,10 +195,10 @@ export default function Generator() {
     setAgency(guide.agency);
     setAction(guide.action);
     setResult(guide.result);
-    // Auto-scroll
-    setTimeout(() => {
-      resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
+    // Auto-scroll removed
+    // setTimeout(() => {
+    //   resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // }, 100);
   };
 
   const handleSavedGuideDelete = (guide: any) => {
@@ -305,10 +305,10 @@ export default function Generator() {
     setError(null);
     setIsMock(false);
     
-    // Auto-scroll to result area start
-    setTimeout(() => {
-      resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
+    // Auto-scroll removed as we now switch views
+    // setTimeout(() => {
+    //   resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // }, 100);
 
     try {
       const response = await fetch('/api/generate', {
@@ -418,8 +418,8 @@ export default function Generator() {
         </p>
       </div>
 
-      <div className="flex flex-col gap-8 max-w-4xl mx-auto">
-        {/* Input Section */}
+      <div className="max-w-4xl mx-auto min-h-[600px]">
+        {(!loading && !result) ? (
         <div className="w-full space-y-5 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
           <SavedGuidesList 
             guides={savedGuides}
@@ -609,9 +609,18 @@ export default function Generator() {
             </div>
           )}
         </div>
-
-        {/* Output Section */}
-        <div ref={resultRef} className="scroll-mt-24 transition-all duration-500 ease-in-out">
+        ) : (
+        /* Output Section */
+        <div ref={resultRef} className="animate-in fade-in slide-in-from-right-8 duration-500">
+           <button 
+             onClick={() => { setResult(''); setLoading(false); }}
+             className="mb-6 flex items-center gap-2 text-gray-600 hover:text-orange-600 dark:text-gray-300 dark:hover:text-orange-400 font-bold transition-colors group"
+           >
+             <div className="bg-white dark:bg-gray-800 p-2 rounded-full shadow-sm border border-gray-200 dark:border-gray-700 group-hover:border-orange-200 transition-all">
+               <ArrowLeft className="w-5 h-5" />
+             </div>
+             Back to Agencies
+           </button>
            {loading ? (
              <LoadingSkeleton />
            ) : (
@@ -646,6 +655,7 @@ export default function Generator() {
              </div>
            )}
         </div>
+        )}
       </div>
     </section>
   );
