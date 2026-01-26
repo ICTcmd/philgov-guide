@@ -284,6 +284,8 @@ export default function Generator() {
     }
   };
 
+  const getMyGuideButtonRef = useRef<HTMLButtonElement>(null);
+
   const handleGenerate = async (overrideAction?: string, overrideLocation?: string) => {
     const currentAction = typeof overrideAction === 'string' ? overrideAction : action;
     const currentLocation = typeof overrideLocation === 'string' ? overrideLocation : location;
@@ -312,10 +314,10 @@ export default function Generator() {
     setError(null);
     setIsMock(false);
     
-    // Auto-scroll removed as we now switch views
-    // setTimeout(() => {
-    //   resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    // }, 100);
+    // Auto-scroll to result/loading section
+    setTimeout(() => {
+      resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
 
     try {
       const response = await fetch('/api/generate', {
@@ -583,7 +585,15 @@ export default function Generator() {
 
           <LocationPicker
             location={location}
-            setLocation={setLocation}
+            setLocation={(loc) => {
+               setLocation(loc);
+               // Auto-scroll to "Get My Guide" button when location is set
+               if (loc) {
+                 setTimeout(() => {
+                   getMyGuideButtonRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                 }, 300);
+               }
+            }}
             detectionMethod={detectionMethod}
             setDetectionMethod={setDetectionMethod}
             setError={setError}
@@ -646,6 +656,7 @@ export default function Generator() {
           )}
 
           <button
+            ref={getMyGuideButtonRef}
             onClick={() => handleGenerate()}
             disabled={loading || !action.trim()}
             className={`w-full relative text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:ring-orange-300 font-bold rounded-lg text-base px-5 py-3.5 mr-2 mb-2 dark:bg-orange-500 dark:hover:bg-orange-600 focus:outline-none dark:focus:ring-orange-800 shadow-lg btn-hover-effect overflow-hidden ${
@@ -676,7 +687,7 @@ export default function Generator() {
         <div ref={resultRef} className="animate-in fade-in slide-in-from-right-8 duration-500">
            <button 
              onClick={() => { setResult(''); setLoading(false); }}
-             className="mb-6 flex items-center gap-2 text-gray-600 hover:text-orange-600 dark:text-gray-300 dark:hover:text-orange-400 font-bold transition-colors group"
+             className="mb-6 flex items-center gap-2 text-gray-600 hover:text-orange-600 dark:text-gray-300 dark:hover:text-orange-400 font-bold transition-colors group z-20 relative"
            >
              <div className="bg-white dark:bg-gray-800 p-2 rounded-full shadow-sm border border-gray-200 dark:border-gray-700 group-hover:border-orange-200 transition-all">
                <ArrowLeft className="w-5 h-5" />

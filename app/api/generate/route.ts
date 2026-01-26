@@ -85,15 +85,22 @@ export async function POST(req: Request) {
           
           // Insert before Follow-up Questions or at the end
           const splitParts = cachedResult.split('**❓ Follow-up Questions:**');
-          const finalResult = splitParts.length > 1 
-            ? `${splitParts[0].trim()}\n\n${locationBlock}\n\n**❓ Follow-up Questions:**${splitParts[1]}`
-            : `${cachedResult}\n\n${locationBlock}`;
-
-          return NextResponse.json({ 
-            result: finalResult, 
-            cached: true,
-            generatedAt: Date.now() // Mock date for cache hits (or could store this in cache)
-          });
+          if (splitParts.length > 1) {
+             const finalResult = `${splitParts[0].trim()}\n\n${locationBlock}\n\n**❓ Follow-up Questions:**${splitParts[1]}`;
+             return NextResponse.json({ 
+                result: finalResult, 
+                cached: true,
+                generatedAt: Date.now()
+             });
+          } else {
+             // Fallback: If split failed (maybe different header format), append to end
+             const finalResult = `${cachedResult}\n\n${locationBlock}`;
+             return NextResponse.json({ 
+                result: finalResult, 
+                cached: true,
+                generatedAt: Date.now()
+             });
+          }
         }
       }
     }
@@ -342,9 +349,19 @@ Since you are in ${location || 'Metro Manila'}, try the nearest branch:
 • **Pro Tip:** Check your City Hall or nearest Mall Government Satellite Office.`;
         
         const splitParts = generatedContent.split('**❓ Follow-up Questions:**');
-        generatedContent = splitParts.length > 1 
-          ? `${splitParts[0].trim()}\n\n${locationBlock}\n\n**❓ Follow-up Questions:**${splitParts[1]}`
-          : `${generatedContent}\n\n${locationBlock}`;
+        if (splitParts.length > 1) {
+          generatedContent = `${splitParts[0].trim()}\n\n${locationBlock}\n\n**❓ Follow-up Questions:**${splitParts[1]}`;
+        } else {
+           // Fallback: If split failed, look for variations or just append
+           const altSplit = generatedContent.match(/(?:[\?❓].*Follow-up Questions|Questions|Tanong|Mga Tanong).*?(:)?/i);
+           if (altSplit && altSplit.index) {
+              const before = generatedContent.substring(0, altSplit.index);
+              const after = generatedContent.substring(altSplit.index);
+              generatedContent = `${before.trim()}\n\n${locationBlock}\n\n${after}`;
+           } else {
+              generatedContent = `${generatedContent}\n\n${locationBlock}`;
+           }
+        }
     }
 
     return NextResponse.json({ result: generatedContent, generatedAt: Date.now() });
