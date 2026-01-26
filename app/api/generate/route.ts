@@ -117,6 +117,7 @@ export async function POST(req: Request) {
       - **Headers:** Keep the section headers EXACTLY as shown below (in English) regardless of the response language. Do not translate headers like "**📋 Requirements Checklist**".
       - **Lists:** Use simple bullet points (•) or numbers (1.).
       - **URLS:** Always use valid URLs starting with https://. Double check for typos.
+      - **Do NOT include a 'Where to Go' section.** This will be added automatically by the system.
       - **Follow-up Questions:** At the very end, provide exactly 3 relevant follow-up questions in the strict block below.
 
       STRICT FOLLOW-UP FORMAT:
