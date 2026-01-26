@@ -37,6 +37,7 @@ export default function Generator() {
   const [geoLoading, setGeoLoading] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
   const [showMapPicker, setShowMapPicker] = useState(false);
+  const [pendingQuickAction, setPendingQuickAction] = useState<string | null>(null);
   const resultRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
 
@@ -63,8 +64,10 @@ export default function Generator() {
   };
 
   const autoFillLocation = async () => {
+    // If terms not accepted, this returns null which might be interpreted as "detection failed"
+    // So caller should check termsAccepted BEFORE calling this.
     if (!termsAccepted) {
-      setShowTerms(true);
+      // Don't auto-open terms here anymore to avoid side-effects in callers
       return null;
     }
 
@@ -287,15 +290,15 @@ export default function Generator() {
       return;
     }
 
-    if (!termsAccepted) {
-      setError("Please accept the Terms & Conditions before generating a guide.");
-      return;
-    }
+    // if (!termsAccepted) {
+    //   setError("Please accept the Terms & Conditions before generating a guide.");
+    //   return;
+    // }
 
     const payload = {
       agency,
       action: trimmedAction,
-      location: currentLocation,
+      location: termsAccepted ? currentLocation : '', // If terms not accepted, ensure location is empty
       language,
       image,
     };
@@ -496,6 +499,13 @@ export default function Generator() {
                     key={act}
                     onClick={async () => { 
                       setAction(act); 
+                      
+                      if (!termsAccepted) {
+                        setPendingQuickAction(act);
+                        setShowTerms(true);
+                        return;
+                      }
+
                       const loc = await autoFillLocation(); 
                       if (loc) {
                         handleGenerate(act, loc);
@@ -582,6 +592,53 @@ export default function Generator() {
             showMapPicker={showMapPicker}
             setShowMapPicker={setShowMapPicker}
           />
+
+          {showTerms && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-4">
+              <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full animate-in fade-in zoom-in duration-200">
+                <h3 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">Terms & Conditions</h3>
+                <div className="text-sm text-gray-700 dark:text-gray-300 space-y-3">
+                  <p>Information is generated to help simplify government requirements. Always verify with official agency websites.</p>
+                  <p>Location access is used only to suggest the nearest offices. Location data is processed on your device and not stored on our servers.</p>
+                  <p>Fees and policies change. If unsure, follow the official site or branch locator links.</p>
+                </div>
+                <div className="mt-5 flex flex-col sm:flex-row gap-3">
+                  <button
+                    onClick={async () => { 
+                      setTermsAccepted(true); 
+                      setShowTerms(false);
+                      if (pendingQuickAction) {
+                        // User accepted terms, proceed with location and generation
+                        const loc = await autoFillLocation();
+                        if (loc) {
+                          handleGenerate(pendingQuickAction, loc);
+                        } else {
+                          setShowMapPicker(true);
+                        }
+                        setPendingQuickAction(null);
+                      }
+                    }}
+                    className="flex-1 text-white bg-brand-primary hover:bg-brand-secondary font-medium rounded-lg text-sm px-4 py-2 text-center"
+                  >
+                    I Agree
+                  </button>
+                  <button
+                    onClick={() => { 
+                      setShowTerms(false); 
+                      if (pendingQuickAction) {
+                        // User declined terms, proceed WITHOUT location
+                        handleGenerate(pendingQuickAction, '');
+                        setPendingQuickAction(null);
+                      }
+                    }}
+                    className="flex-1 text-gray-700 border border-gray-300 hover:bg-gray-50 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-700 text-sm font-medium rounded-lg px-4 py-2 text-center"
+                  >
+                    Decline (No Location)
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
 
           <button
             onClick={() => handleGenerate()}

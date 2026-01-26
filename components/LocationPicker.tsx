@@ -54,6 +54,7 @@ export default function LocationPicker({
   setShowMapPicker
 }: LocationPickerProps) {
   const [mapStatus, setMapStatus] = useState<string>('');
+  const mapInstanceRef = React.useRef<LeafletMap | null>(null);
 
   const refineTypedLocation = async () => {
     if (!location.trim()) {
@@ -99,17 +100,44 @@ export default function LocationPicker({
     }
   };
 
-  const openMapPicker = async () => {
-    setShowMapPicker(true);
-    setMapStatus('Loading map…');
-    await ensureLeaflet();
-    setTimeout(async () => {
+  React.useEffect(() => {
+    if (!showMapPicker) {
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+      return;
+    }
+
+    let isMounted = true;
+    
+    const initMap = async () => {
+      setMapStatus('Loading map…');
+      await ensureLeaflet();
+      
+      if (!isMounted) return;
+
+      // Small delay to ensure DOM is ready
+      await new Promise(r => setTimeout(r, 100));
+
       try {
         const L = (window as unknown as { L: Leaflet }).L;
         const container = document.getElementById('map-container');
-        if (!container) return;
+        
+        if (!container) {
+          console.error("Map container not found");
+          return;
+        }
+
+        // Cleanup existing map if any
+        if (mapInstanceRef.current) {
+          mapInstanceRef.current.remove();
+          mapInstanceRef.current = null;
+        }
         
         const map = L.map('map-container').setView([10.3157, 123.8854], 6);
+        mapInstanceRef.current = map;
+
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '© OpenStreetMap contributors'
         }).addTo(map);
@@ -130,6 +158,7 @@ export default function LocationPicker({
           }
           await reversePick(lat, lon);
         };
+
         const reversePick = async (lat: number, lon: number) => {
           setMapStatus('Refining…');
           try {
@@ -151,9 +180,11 @@ export default function LocationPicker({
             setMapStatus(`${lat.toFixed(5)}, ${lon.toFixed(5)}`);
           }
         };
+
         map.on('click', async (e: { latlng: LatLng }) => {
           await setMarker(e.latlng.lat, e.latlng.lng);
         });
+
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(
             async (pos) => {
@@ -165,10 +196,29 @@ export default function LocationPicker({
           );
         }
         setMapStatus('Tap anywhere on the map to set your location.');
-      } catch {
+      } catch (err) {
+        console.error("Map init error:", err);
         setMapStatus('Failed to load map. Please try again later.');
       }
-    }, 50);
+    };
+
+    initMap();
+
+    return () => {
+      isMounted = false;
+      if (mapInstanceRef.current) {
+        mapInstanceRef.current.remove();
+        mapInstanceRef.current = null;
+      }
+    };
+  }, [showMapPicker]);
+
+  const openMapPicker = () => {
+    if (!termsAccepted) {
+      setShowTerms(true);
+      return;
+    }
+    setShowMapPicker(true);
   };
 
   return (
@@ -191,6 +241,10 @@ export default function LocationPicker({
       <div className="mt-3 flex items-center gap-3">
         <button
           onClick={async () => {
+            if (!termsAccepted) {
+              setShowTerms(true);
+              return;
+            }
             const loc = await autoFillLocation();
             if (!loc) {
               setShowMapPicker(true);
@@ -255,32 +309,6 @@ export default function LocationPicker({
         </div>
       </div>
 
-      {showTerms && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full">
-            <h3 className="text-2xl font-bold mb-3 text-gray-900 dark:text-white">Terms & Conditions</h3>
-            <div className="text-sm text-gray-700 dark:text-gray-300 space-y-3">
-              <p>Information is generated to help simplify government requirements. Always verify with official agency websites.</p>
-              <p>Location access is used only to suggest the nearest offices. Location data is processed on your device and not stored on our servers.</p>
-              <p>Fees and policies change. If unsure, follow the official site or branch locator links.</p>
-            </div>
-            <div className="mt-5 flex gap-3">
-              <button
-                onClick={() => { setTermsAccepted(true); setShowTerms(false); }}
-                className="text-white bg-brand-primary hover:bg-brand-secondary font-medium rounded-lg text-sm px-4 py-2"
-              >
-                I Agree
-              </button>
-              <button
-                onClick={() => setShowTerms(false)}
-                className="text-gray-700 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white text-sm"
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
       {showMapPicker && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-xl max-w-2xl w-full">
