@@ -184,38 +184,64 @@ export async function POST(req: Request) {
     async function tryGoogle(): Promise<string> {
       if (!googleKey) throw new Error("NO_GOOGLE_KEY");
       const genAI = new GoogleGenerativeAI(googleKey);
-      const model = genAI.getGenerativeModel({ 
-        model: process.env.GOOGLE_MODEL || "gemini-1.5-flash",
-        generationConfig: {
-          temperature: 0.4, // Lower temperature for more factual responses
-          topK: 40,
-          topP: 0.95,
-          maxOutputTokens: 8192,
-        },
-        safetySettings: [
-          { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-          { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-          { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-          { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
-        ]
-      });
+      
+      // Fallback model list: Try preferred model first, then known stable ones
+      const modelsToTry = [
+        process.env.GOOGLE_MODEL, 
+        "gemini-2.5-flash",
+        "gemini-1.5-flash", 
+        "gemini-flash-latest"
+      ].filter(Boolean) as string[]; // remove undefined if env var is missing
+      
+      // Deduplicate
+      const uniqueModels = [...new Set(modelsToTry)];
+      
+      let lastModelError;
 
-      const parts: Array<string | { inlineData: { data: string; mimeType: string } }> = [basePrompt];
-      if (image) {
-        // Image format: "data:image/jpeg;base64,..."
-        const base64Data = image.split(',')[1];
-        const mimeType = image.split(',')[0].match(/:(.*?);/)?.[1] || 'image/jpeg';
-        parts.push({
-          inlineData: {
-            data: base64Data,
-            mimeType: mimeType
+      for (const modelName of uniqueModels) {
+        try {
+          console.log(`API: Trying Google Model: ${modelName}`);
+          const model = genAI.getGenerativeModel({ 
+            model: modelName,
+            generationConfig: {
+              temperature: 0.4,
+              topK: 40,
+              topP: 0.95,
+              maxOutputTokens: 8192,
+            },
+            safetySettings: [
+              { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+              { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+              { category: HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+              { category: HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, threshold: HarmBlockThreshold.BLOCK_MEDIUM_AND_ABOVE },
+            ]
+          });
+
+          const parts: Array<string | { inlineData: { data: string; mimeType: string } }> = [basePrompt];
+          if (image) {
+            const base64Data = image.split(',')[1];
+            const mimeType = image.split(',')[0].match(/:(.*?);/)?.[1] || 'image/jpeg';
+            parts.push({
+              inlineData: {
+                data: base64Data,
+                mimeType: mimeType
+              }
+            });
           }
-        });
-      }
 
-      const result = await model.generateContent(parts);
-      const response = await result.response;
-      return response.text();
+          const result = await model.generateContent(parts);
+          const response = await result.response;
+          return response.text();
+          
+        } catch (err: any) {
+          console.warn(`API: Failed with model ${modelName}:`, err.message);
+          lastModelError = err;
+          // Continue to next model in loop
+        }
+      }
+      
+      // If loop finishes without returning, all models failed
+      throw lastModelError || new Error("All Google models failed.");
     }
 
     async function tryOpenAI(): Promise<string> {
