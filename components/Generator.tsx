@@ -15,6 +15,7 @@ import { Image as ImageIcon, X, Mic, ArrowLeft } from 'lucide-react';
 type GenerateResponse = {
   result?: string;
   error?: string;
+  generatedAt?: number;
 };
 
 export default function Generator() {
@@ -38,6 +39,7 @@ export default function Generator() {
   const [showTerms, setShowTerms] = useState(false);
   const [showMapPicker, setShowMapPicker] = useState(false);
   const [pendingQuickAction, setPendingQuickAction] = useState<string | null>(null);
+  const [resultGeneratedAt, setResultGeneratedAt] = useState<number | undefined>(undefined);
   const resultRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
 
@@ -194,10 +196,11 @@ export default function Generator() {
     }
   };
 
-  const handleSavedGuideSelect = (guide: { agency: string, action: string, result: string }) => {
+  const handleSavedGuideSelect = (guide: { agency: string, action: string, result: string, date?: number }) => {
     setAgency(guide.agency);
     setAction(guide.action);
     setResult(guide.result);
+    setResultGeneratedAt(guide.date);
     // Auto-scroll removed
     // setTimeout(() => {
     //   resultRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -305,6 +308,7 @@ export default function Generator() {
 
     setLoading(true);
     setResult("");
+    setResultGeneratedAt(undefined);
     setError(null);
     setIsMock(false);
     
@@ -346,6 +350,7 @@ export default function Generator() {
       }
 
       let finalResult = data.result;
+      setResultGeneratedAt(data.generatedAt);
       let extractedQuestions: string[] = [];
 
       // 1. Primary: Look for hidden <<<FOLLOWUPS>>> block
@@ -688,6 +693,7 @@ export default function Generator() {
                   action={action} 
                   isMock={isMock} 
                   onGuideUpdate={loadSavedGuides}
+                  generatedAt={resultGeneratedAt}
                 />
                 
                 {followUps.length > 0 && (

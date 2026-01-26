@@ -17,6 +17,7 @@ const GenerateRequestSchema = z.object({
   location: z.string().trim().max(100).optional().default(""),
   language: z.string().trim().optional().default("taglish"),
   image: z.string().optional().nullable(), // Base64 image data
+  forceRefresh: z.boolean().optional().default(false),
 });
 
 /**
@@ -57,7 +58,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const { agency, action, location, language, image } = parseResult.data;
+    const { agency, action, location, language, image, forceRefresh } = parseResult.data;
 
     // 3. Performance: Caching (Skip if image is provided as it makes request unique)
     // NOTE: We deliberately EXCLUDE 'location' from the cache key.
@@ -67,25 +68,33 @@ export async function POST(req: Request) {
     let cacheKey = "";
     if (!image) {
       cacheKey = cacheService.generateKey('generate', agency, action, language);
-      const cachedResult = cacheService.get<string>(cacheKey);
+      
+      // Skip cache if forceRefresh is true
+      if (!forceRefresh) {
+        const cachedResult = cacheService.get<string>(cacheKey);
 
-      if (cachedResult) {
-        console.log("API: Returning cached result for:", cacheKey);
-        // Inject Location Info into Cached Result
-        const mapsLink = `https://www.google.com/maps/search/${encodeURIComponent(`nearest ${agency} to ${location || ""}`)}`;
-        const locationBlock = `
+        if (cachedResult) {
+          console.log("API: Returning cached result for:", cacheKey);
+          // Inject Location Info into Cached Result
+          const mapsLink = `https://www.google.com/maps/search/${encodeURIComponent(`nearest ${agency} to ${location || ""}`)}`;
+          const locationBlock = `
 **📍 Where to Go**
 • **Nearest Office:** Search near ${location || "your area"}
 • **Google Maps:** ${mapsLink}
 • **Pro Tip:** Check your City Hall or nearest Mall Government Satellite Office.`;
-        
-        // Insert before Follow-up Questions or at the end
-        const splitParts = cachedResult.split('**❓ Follow-up Questions:**');
-        const finalResult = splitParts.length > 1 
-          ? `${splitParts[0].trim()}\n\n${locationBlock}\n\n**❓ Follow-up Questions:**${splitParts[1]}`
-          : `${cachedResult}\n\n${locationBlock}`;
+          
+          // Insert before Follow-up Questions or at the end
+          const splitParts = cachedResult.split('**❓ Follow-up Questions:**');
+          const finalResult = splitParts.length > 1 
+            ? `${splitParts[0].trim()}\n\n${locationBlock}\n\n**❓ Follow-up Questions:**${splitParts[1]}`
+            : `${cachedResult}\n\n${locationBlock}`;
 
-        return NextResponse.json({ result: finalResult, cached: true });
+          return NextResponse.json({ 
+            result: finalResult, 
+            cached: true,
+            generatedAt: Date.now() // Mock date for cache hits (or could store this in cache)
+          });
+        }
       }
     }
 
@@ -262,9 +271,12 @@ export async function POST(req: Request) {
     }
 
     if (!generatedContent) {
-      // Fallback to Mock if no Key
-      console.log("API: Using Mock Mode");
-      generatedContent = `[MOCK MODE: No API Key Detected]
+      // Fallback to Mock if no Key or if Generation Failed
+      const hasKeys = !!(googleKey || openaiKey);
+      const statusMsg = hasKeys ? "[MOCK MODE: API Generation Failed]" : "[MOCK MODE: No API Key Detected]";
+      console.log(`API: Using Mock Mode (${statusMsg})`);
+      
+      generatedContent = `${statusMsg}
       
 **👋 Kamusta!** 
 Getting your requirements for ${agency} doesn't have to be stressful. Here is your simple guide:
@@ -306,7 +318,7 @@ Since you are in ${location || 'Metro Manila'}, try the nearest branch:
           : `${generatedContent}\n\n${locationBlock}`;
     }
 
-    return NextResponse.json({ result: generatedContent });
+    return NextResponse.json({ result: generatedContent, generatedAt: Date.now() });
   } catch (error: unknown) {
     console.error('API Error generating content:', error);
     const message = error instanceof Error ? error.message : 'Unknown error';

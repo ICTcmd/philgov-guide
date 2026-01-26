@@ -8,9 +8,10 @@ interface ResultCardProps {
   action: string;
   isMock: boolean;
   onGuideUpdate?: () => void;
+  generatedAt?: number;
 }
 
-export default function ResultCard({ result, agency, action, isMock, onGuideUpdate }: ResultCardProps) {
+export default function ResultCard({ result, agency, action, isMock, onGuideUpdate, generatedAt }: ResultCardProps) {
   const [checklist, setChecklist] = useState<string[]>([]);
   const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
   const [isSaved, setIsSaved] = useState(false);
@@ -186,6 +187,12 @@ export default function ResultCard({ result, agency, action, isMock, onGuideUpda
         <h2 className="text-2xl md:text-3xl font-bold text-brand-primary dark:text-white flex items-center gap-2">
           {agency} <span className="text-gray-400 font-light">|</span> <span className="text-gray-700 dark:text-gray-300">{action}</span>
         </h2>
+        {generatedAt && (
+          <p className="text-xs text-gray-500 mt-2 flex items-center gap-1">
+            <Clock className="w-3 h-3" /> 
+            Last Updated: {new Date(generatedAt).toLocaleDateString()}
+          </p>
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
