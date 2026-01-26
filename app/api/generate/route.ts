@@ -60,14 +60,32 @@ export async function POST(req: Request) {
     const { agency, action, location, language, image } = parseResult.data;
 
     // 3. Performance: Caching (Skip if image is provided as it makes request unique)
+    // NOTE: We deliberately EXCLUDE 'location' from the cache key.
+    // This allows the "Requirements & Process" (which are standard nationwide) to be cached 
+    // and shared between users from different cities (e.g., Bago vs Bacolod).
+    // The specific location info (Where to Go) is injected dynamically after retrieval.
     let cacheKey = "";
     if (!image) {
-      cacheKey = cacheService.generateKey('generate', agency, action, location, language);
+      cacheKey = cacheService.generateKey('generate', agency, action, language);
       const cachedResult = cacheService.get<string>(cacheKey);
 
       if (cachedResult) {
         console.log("API: Returning cached result for:", cacheKey);
-        return NextResponse.json({ result: cachedResult, cached: true });
+        // Inject Location Info into Cached Result
+        const mapsLink = `https://www.google.com/maps/search/${encodeURIComponent(`nearest ${agency} to ${location || ""}`)}`;
+        const locationBlock = `
+**📍 Where to Go**
+• **Nearest Office:** Search near ${location || "your area"}
+• **Google Maps:** ${mapsLink}
+• **Pro Tip:** Check your City Hall or nearest Mall Government Satellite Office.`;
+        
+        // Insert before Follow-up Questions or at the end
+        const splitParts = cachedResult.split('**❓ Follow-up Questions:**');
+        const finalResult = splitParts.length > 1 
+          ? `${splitParts[0].trim()}\n\n${locationBlock}\n\n**❓ Follow-up Questions:**${splitParts[1]}`
+          : `${cachedResult}\n\n${locationBlock}`;
+
+        return NextResponse.json({ result: finalResult, cached: true });
       }
     }
 
@@ -110,7 +128,7 @@ export async function POST(req: Request) {
       
       ADVANCED REASONING (CHAIN-OF-THOUGHT):
       1. **Intent Analysis:** Is this a renewal, new application, or replacement (lost)?
-      2. **Location Context:** User is in "${location || "Not specified"}". Suggest nearest offices or "One-Stop Shops" in City Halls/Malls.
+      2. **Location Context:** User is in the Philippines. Suggest general official channels.
       3. **Requirement Retrieval:** Recall the latest ${currentYear} requirements. Note if online appointment is mandatory (common now).
       4. **Image Analysis:** If an image is attached, specificy if it's the correct form/ID or if it looks invalid.
       5. **Response Generation:** Draft the response in ${language} using the format below.
@@ -122,7 +140,7 @@ export async function POST(req: Request) {
 
       USER CONTEXT:
       - Agency: ${agency}
-      - Location: ${location || "Not specified"}
+      - Location: Philippines (General)
       - Request: "${action}"
       ${image ? "[IMAGE ATTACHED]" : ""}
 
@@ -143,11 +161,6 @@ export async function POST(req: Request) {
       **💰 Estimated Cost & Validity**
       • Fee: [Amount]
       • Validity: [Duration]
-
-      **📍 Where to Go**
-      • **Nearest Office:** [Suggest based on location]
-      • **Google Maps:** ${mapsLink}
-      • **Pro Tip:** Check your City Hall or nearest Mall Government Satellite Office.
 
       **💡 BAGO APP Pro Tip**
       [A helpful insider tip, e.g., "Best time to go is Tuesday morning", "Bring a black pen", "Dress code reminder"]
@@ -277,6 +290,19 @@ Since you are in ${location || 'Metro Manila'}, try the nearest branch:
 • **Check your City Hall:** Many LGUs have satellite offices. Visit your local City Hall to inquire.
 
 **💡 Pro Tip:** Bring a black pen and extra photocopies just in case!`;
+    } else if (!generatedContent.includes('**📍 Where to Go**')) {
+        // Inject Location Info into API Response (if not already present)
+        const mapsLink = `https://www.google.com/maps/search/${encodeURIComponent(`nearest ${agency} to ${location || ""}`)}`;
+        const locationBlock = `
+**📍 Where to Go**
+• **Nearest Office:** Search near ${location || "your area"}
+• **Google Maps:** ${mapsLink}
+• **Pro Tip:** Check your City Hall or nearest Mall Government Satellite Office.`;
+        
+        const splitParts = generatedContent.split('**❓ Follow-up Questions:**');
+        generatedContent = splitParts.length > 1 
+          ? `${splitParts[0].trim()}\n\n${locationBlock}\n\n**❓ Follow-up Questions:**${splitParts[1]}`
+          : `${generatedContent}\n\n${locationBlock}`;
     }
 
     return NextResponse.json({ result: generatedContent });
