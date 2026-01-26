@@ -14,6 +14,8 @@ interface LocationPickerProps {
   autoFillLocation: () => Promise<string | null>;
   showTerms: boolean;
   setShowTerms: (show: boolean) => void;
+  showMapPicker: boolean;
+  setShowMapPicker: (show: boolean) => void;
 }
 
 type LatLng = { lat: number; lng: number };
@@ -47,9 +49,10 @@ export default function LocationPicker({
   geoLoading,
   autoFillLocation,
   showTerms,
-  setShowTerms
+  setShowTerms,
+  showMapPicker,
+  setShowMapPicker
 }: LocationPickerProps) {
-  const [showMapPicker, setShowMapPicker] = useState(false);
   const [mapStatus, setMapStatus] = useState<string>('');
 
   const refineTypedLocation = async () => {
@@ -187,7 +190,12 @@ export default function LocationPicker({
       </p>
       <div className="mt-3 flex items-center gap-3">
         <button
-          onClick={autoFillLocation}
+          onClick={async () => {
+            const loc = await autoFillLocation();
+            if (!loc) {
+              setShowMapPicker(true);
+            }
+          }}
           disabled={geoLoading}
           className={`text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:ring-orange-300 font-medium rounded-lg text-sm px-4 py-2.5 dark:bg-orange-500 dark:hover:bg-orange-600 btn-hover-effect ${geoLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
         >

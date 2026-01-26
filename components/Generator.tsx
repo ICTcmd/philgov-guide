@@ -36,6 +36,7 @@ export default function Generator() {
   const [loadingMsgIndex, setLoadingMsgIndex] = useState(0);
   const [geoLoading, setGeoLoading] = useState(false);
   const [showTerms, setShowTerms] = useState(false);
+  const [showMapPicker, setShowMapPicker] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
   const searchParams = useSearchParams();
 
@@ -70,13 +71,10 @@ export default function Generator() {
     setGeoLoading(true);
     setError(null);
 
-    // Default to Bago City if GPS fails or is unavailable
+    // Default to null if GPS fails or is unavailable (trigger manual/map input)
     const useDefaultLocation = () => {
-      const defaultLoc = "Bago City, Negros Occidental";
-      setLocation(defaultLoc);
-      setDetectionMethod('manual');
       setGeoLoading(false);
-      return defaultLoc;
+      return null;
     };
 
     if (!navigator.geolocation) {
@@ -496,7 +494,16 @@ export default function Generator() {
                 {AGENCY_ACTIONS[agency].map((act) => (
                   <button
                     key={act}
-                    onClick={async () => { setAction(act); const loc = await autoFillLocation(); handleGenerate(act, loc || undefined); }}
+                    onClick={async () => { 
+                      setAction(act); 
+                      const loc = await autoFillLocation(); 
+                      if (loc) {
+                        handleGenerate(act, loc);
+                      } else {
+                        // If location detection fails, open map picker to let user pin location
+                        setShowMapPicker(true);
+                      }
+                    }}
                     className="text-left text-xs md:text-sm px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 hover:bg-brand-primary hover:text-white hover:border-brand-primary transition-all shadow-sm font-medium text-gray-700 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-brand-primary"
                   >
                     {act}
@@ -572,6 +579,8 @@ export default function Generator() {
             autoFillLocation={autoFillLocation}
             showTerms={showTerms}
             setShowTerms={setShowTerms}
+            showMapPicker={showMapPicker}
+            setShowMapPicker={setShowMapPicker}
           />
 
           <button
