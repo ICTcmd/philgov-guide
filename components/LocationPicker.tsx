@@ -223,7 +223,8 @@ export default function LocationPicker({
 
   return (
     <div>
-      <label htmlFor="location-input" className="block mb-2 text-sm font-bold text-gray-700 dark:text-white">
+      <label htmlFor="location-input" className="block mb-2 text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
+        <span className="bg-brand-primary text-white w-5 h-5 rounded-full flex items-center justify-center text-xs">3</span>
         Where are you located? (City/Province)
       </label>
       <input

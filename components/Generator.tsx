@@ -431,6 +431,23 @@ export default function Generator() {
       <div className="max-w-4xl mx-auto min-h-[600px]">
         {(!loading && !result) ? (
         <div className="w-full space-y-5 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between px-2 pb-4 border-b border-gray-100 dark:border-gray-700 mb-4">
+            <div className={`flex flex-col items-center gap-1 ${agency ? 'text-brand-primary' : 'text-gray-400'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${agency ? 'bg-orange-100' : 'bg-gray-100 dark:bg-gray-700'}`}>1</div>
+              <span className="text-[10px] font-bold uppercase tracking-wider">Agency</span>
+            </div>
+            <div className={`flex-1 h-0.5 mx-2 ${action ? 'bg-brand-primary' : 'bg-gray-200 dark:bg-gray-700'}`}></div>
+            <div className={`flex flex-col items-center gap-1 ${action ? 'text-brand-primary' : 'text-gray-400'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${action ? 'bg-orange-100' : 'bg-gray-100 dark:bg-gray-700'}`}>2</div>
+              <span className="text-[10px] font-bold uppercase tracking-wider">Service</span>
+            </div>
+            <div className={`flex-1 h-0.5 mx-2 ${location ? 'bg-brand-primary' : 'bg-gray-200 dark:bg-gray-700'}`}></div>
+            <div className={`flex flex-col items-center gap-1 ${location ? 'text-brand-primary' : 'text-gray-400'}`}>
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold ${location ? 'bg-orange-100' : 'bg-gray-100 dark:bg-gray-700'}`}>3</div>
+              <span className="text-[10px] font-bold uppercase tracking-wider">Location</span>
+            </div>
+          </div>
+
           <SavedGuidesList 
             guides={savedGuides}
             onSelect={handleSavedGuideSelect}
@@ -442,7 +459,8 @@ export default function Generator() {
           />
 
           <div>
-            <label htmlFor="agency-select" className="block mb-2 text-sm font-bold text-gray-700 dark:text-white">
+            <label htmlFor="agency-select" className="block mb-2 text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
+              <span className="bg-brand-primary text-white w-5 h-5 rounded-full flex items-center justify-center text-xs">1</span>
               Select Agency
             </label>
             <div className="flex gap-2">
@@ -496,8 +514,9 @@ export default function Generator() {
 
           {/* Dynamic Quick Actions for Selected Agency */}
           {AGENCY_ACTIONS[agency] && (
-            <div>
-              <label className="block mb-2 text-sm font-bold text-gray-700 dark:text-white">
+            <div className={`p-4 rounded-xl border-2 transition-all duration-300 ${!action ? 'border-orange-200 bg-orange-50/50 dark:border-orange-900/30 dark:bg-orange-900/10' : 'border-transparent'}`}>
+              <label className="block mb-3 text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
+                <span className="bg-brand-primary text-white w-5 h-5 rounded-full flex items-center justify-center text-xs">2</span>
                 Available Services for {agency.split('(')[0].trim()}
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
@@ -521,7 +540,11 @@ export default function Generator() {
                         setShowMapPicker(true);
                       }
                     }}
-                    className="text-left text-xs md:text-sm px-4 py-3 rounded-lg border border-gray-200 bg-gray-50 hover:bg-brand-primary hover:text-white hover:border-brand-primary transition-all shadow-sm font-medium text-gray-700 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-brand-primary"
+                    className={`text-left text-xs md:text-sm px-4 py-3 rounded-lg border transition-all shadow-sm font-medium 
+                      ${action === act 
+                        ? 'bg-brand-primary text-white border-brand-primary ring-2 ring-orange-200' 
+                        : 'border-gray-200 bg-white hover:bg-orange-100 hover:text-orange-900 hover:border-orange-200 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-200 dark:hover:bg-gray-600'
+                      }`}
                   >
                     {act}
                   </button>
@@ -531,7 +554,8 @@ export default function Generator() {
           )}
 
           <div>
-            <label htmlFor="action-input" className="block mb-2 text-sm font-bold text-gray-700 dark:text-white">
+            <label htmlFor="action-input" className="block mb-2 text-sm font-bold text-gray-700 dark:text-white flex items-center gap-2">
+              <span className="bg-gray-400 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs">OR</span>
               Or type a specific concern:
             </label>
             <div className="relative">
@@ -659,8 +683,8 @@ export default function Generator() {
             ref={getMyGuideButtonRef}
             onClick={() => handleGenerate()}
             disabled={loading || !action.trim()}
-            className={`w-full relative text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:ring-orange-300 font-bold rounded-lg text-base px-5 py-3.5 mr-2 mb-2 dark:bg-orange-500 dark:hover:bg-orange-600 focus:outline-none dark:focus:ring-orange-800 shadow-lg btn-hover-effect overflow-hidden ${
-              (loading || !action.trim()) ? 'opacity-90 cursor-wait' : ''
+            className={`w-full relative text-white bg-orange-500 hover:bg-orange-600 focus:ring-4 focus:ring-orange-300 font-bold rounded-lg text-base px-5 py-3.5 mr-2 mb-2 dark:bg-orange-500 dark:hover:bg-orange-600 focus:outline-none dark:focus:ring-orange-800 shadow-lg btn-hover-effect overflow-hidden sticky bottom-4 z-30 ${
+              (loading || !action.trim()) ? 'opacity-90 cursor-wait' : (action.trim() ? 'animate-pulse ring-4 ring-orange-200 dark:ring-orange-900' : '')
             }`}
           >
             {loading ? (
