@@ -15,15 +15,24 @@ export default function ResultCard({ result, agency, action, isMock, onGuideUpda
   const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
   const [isSaved, setIsSaved] = useState(false);
 
+  // Regex to find the requirements section. Matches variants like:
+  // **📋 Requirements Checklist**
+  // **Requirements Checklist**
+  // **Requirements**
+  // **Mga Kailangan**
+  // **Documents Needed**
+  // Case insensitive, optional emoji
+  const checklistRegex = /\*\*(?:📋|📝)?\s*(?:Requirements|Checklist|Mga Kailangan|Requirements Checklist|Mga Requirement|Documents Needed)\s*\*\*([\s\S]*?)(?=\*\*|$)/i;
+
   // Parse checklist from AI response
   useEffect(() => {
-    const checklistMatch = result.match(/\*\*📋 Requirements Checklist\*\*([\s\S]*?)(?=\*\*|$)/);
+    const checklistMatch = result.match(checklistRegex);
     if (checklistMatch) {
       const items = checklistMatch[1]
         .split('\n')
         .map(line => line.trim())
-        .filter(line => line.startsWith('•'))
-        .map(line => line.substring(1).trim());
+        .filter(line => line.startsWith('•') || line.match(/^\d+\./)) // Accept bullets or numbered lists
+        .map(line => line.replace(/^•|^\d+\./, '').trim()); // Clean up
       
       if (items.length > 0) {
         setChecklist(items);
@@ -32,7 +41,7 @@ export default function ResultCard({ result, agency, action, isMock, onGuideUpda
         setCheckedItems(new Array(items.length).fill(false));
       }
     }
-
+    
     // Check if already saved
     const saved = localStorage.getItem('savedGuides');
     if (saved) {

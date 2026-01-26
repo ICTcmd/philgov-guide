@@ -96,6 +96,7 @@ export async function POST(req: Request) {
       
       FORMATTING RULES (CRITICAL):
       - **Do NOT use Markdown headers like # or ##.** Use **Bold Text** for all headers.
+      - **Headers:** Keep the section headers EXACTLY as shown below (in English) regardless of the response language. Do not translate headers like "**📋 Requirements Checklist**".
       - **Lists:** Use simple bullet points (•) or numbers (1.).
       - **URLS:** Always use valid URLs starting with https://. Double check for typos.
       - **Follow-up Questions:** At the very end, provide exactly 3 relevant follow-up questions in the strict block below.
@@ -161,7 +162,7 @@ export async function POST(req: Request) {
       if (!googleKey) throw new Error("NO_GOOGLE_KEY");
       const genAI = new GoogleGenerativeAI(googleKey);
       const model = genAI.getGenerativeModel({ 
-        model: process.env.GOOGLE_MODEL || "gemini-2.5-flash",
+        model: process.env.GOOGLE_MODEL || "gemini-1.5-flash",
         generationConfig: {
           temperature: 0.4, // Lower temperature for more factual responses
           topK: 40,

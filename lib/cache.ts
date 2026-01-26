@@ -6,9 +6,10 @@ type CacheEntry<T> = {
 const cache = new Map<string, CacheEntry<unknown>>();
 const DEFAULT_TTL_MS = (() => {
   const raw = process.env.CACHE_TTL_MS;
-  if (!raw) return 60 * 60 * 1000;
+  // Default to 24 hours (24 * 60 * 60 * 1000) to "learn" for longer
+  if (!raw) return 24 * 60 * 60 * 1000;
   const parsed = Number(raw);
-  if (!Number.isFinite(parsed) || parsed <= 0) return 60 * 60 * 1000;
+  if (!Number.isFinite(parsed) || parsed <= 0) return 24 * 60 * 60 * 1000;
   return parsed;
 })();
 
