@@ -727,6 +727,7 @@ export default function Generator() {
                   result={result} 
                   agency={agency} 
                   action={action} 
+                  location={location}
                   isMock={isMock} 
                   onGuideUpdate={loadSavedGuides}
                   generatedAt={resultGeneratedAt}

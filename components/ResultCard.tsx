@@ -6,12 +6,13 @@ interface ResultCardProps {
   result: string;
   agency: string;
   action: string;
+  location?: string;
   isMock: boolean;
   onGuideUpdate?: () => void;
   generatedAt?: number;
 }
 
-export default function ResultCard({ result, agency, action, isMock, onGuideUpdate, generatedAt }: ResultCardProps) {
+export default function ResultCard({ result, agency, action, location, isMock, onGuideUpdate, generatedAt }: ResultCardProps) {
   const [checklist, setChecklist] = useState<string[]>([]);
   const [checkedItems, setCheckedItems] = useState<boolean[]>([]);
   const [isSaved, setIsSaved] = useState(false);
@@ -226,10 +227,25 @@ export default function ResultCard({ result, agency, action, isMock, onGuideUpda
               <div className="flex items-start gap-3">
                 <MapPin className="w-5 h-5 text-brand-primary mt-0.5" />
                 <div>
-                  <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Apply Via</p>
-                  <a href={`https://www.google.com/search?q=${agency}+Philippines+official+site`} target="_blank" className="text-sm font-medium text-brand-primary hover:underline">
-                    Online or Branch
-                  </a>
+                  <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Nearest Office</p>
+                  {location ? (
+                    <a 
+                      href={`https://www.google.com/maps/search/${encodeURIComponent(`nearest ${agency} to ${location}`)}`} 
+                      target="_blank" 
+                      className="text-sm font-bold text-brand-primary hover:underline block"
+                    >
+                      View Map in {location}
+                    </a>
+                  ) : (
+                    <a 
+                      href={`https://www.google.com/maps/search/${encodeURIComponent(`nearest ${agency}`)}`} 
+                      target="_blank" 
+                      className="text-sm font-bold text-brand-primary hover:underline block"
+                    >
+                      Find Nearest Branch
+                    </a>
+                  )}
+                  <span className="text-xs text-gray-400 block mt-1">Opens Google Maps</span>
                 </div>
               </div>
 
@@ -246,6 +262,14 @@ export default function ResultCard({ result, agency, action, isMock, onGuideUpda
 
           {/* Action Buttons */}
           <div className="flex flex-col gap-3">
+            <button
+              onClick={() => window.open(`https://www.google.com/maps/search/${encodeURIComponent(location ? `nearest ${agency} to ${location}` : `nearest ${agency}`)}`, '_blank')}
+              className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-orange-100 text-orange-700 border border-orange-200 rounded-lg font-bold hover:bg-orange-200 shadow-sm dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800 btn-hover-effect"
+            >
+              <MapPin className="w-4 h-4" />
+              {location ? `Locate in ${location}` : 'Find Nearest Branch'}
+            </button>
+
             <button
               onClick={handleSave}
               className={`w-full flex items-center justify-center gap-2 py-3 px-4 rounded-lg font-bold shadow-sm transition-all ${
