@@ -1,6 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import jsPDF from 'jspdf';
-import { Download, Copy, ExternalLink, Clock, CreditCard, MapPin, UserCheck, CheckCircle2, Circle, Bookmark, Share2 } from 'lucide-react';
+import { 
+  Download, 
+  Copy, 
+  ExternalLink, 
+  Clock, 
+  CreditCard, 
+  MapPin, 
+  UserCheck, 
+  CheckCircle2, 
+  Circle, 
+  Bookmark, 
+  Share2, 
+  Globe,
+  AlertCircle,
+  ChevronRight
+} from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
+import { AGENCY_LINKS } from '@/lib/constants';
 
 interface ResultCardProps {
   result: string;
@@ -208,6 +225,23 @@ export default function ResultCard({ result, agency, action, location, isMock, o
             </div>
             <div className="p-5 space-y-4 bg-orange-50/50 dark:bg-gray-800/50">
               
+              {(AGENCY_LINKS[agency]?.appointment || AGENCY_LINKS[agency]?.homepage) && (
+                <div className="flex items-start gap-3">
+                  <Globe className="w-5 h-5 text-brand-primary mt-0.5" />
+                  <div>
+                    <p className="text-xs font-bold text-gray-500 uppercase tracking-wide">Online Services</p>
+                    <a 
+                      href={AGENCY_LINKS[agency]?.appointment || AGENCY_LINKS[agency]?.homepage} 
+                      target="_blank" 
+                      className="text-sm font-bold text-brand-primary hover:underline block"
+                    >
+                      {AGENCY_LINKS[agency]?.appointment ? 'Apply / Book Online' : 'Official Website'}
+                    </a>
+                    <span className="text-xs text-gray-400 block mt-1">External Link</span>
+                  </div>
+                </div>
+              )}
+
               <div className="flex items-start gap-3">
                 <Clock className="w-5 h-5 text-brand-primary mt-0.5" />
                 <div>
@@ -262,6 +296,16 @@ export default function ResultCard({ result, agency, action, location, isMock, o
 
           {/* Action Buttons */}
           <div className="flex flex-col gap-3">
+            {(AGENCY_LINKS[agency]?.appointment || AGENCY_LINKS[agency]?.homepage) && (
+              <button
+                onClick={() => window.open(AGENCY_LINKS[agency]?.appointment || AGENCY_LINKS[agency]?.homepage, '_blank')}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-blue-100 text-blue-700 border border-blue-200 rounded-lg font-bold hover:bg-blue-200 shadow-sm dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800 btn-hover-effect"
+              >
+                <Globe className="w-4 h-4" />
+                Apply Online
+              </button>
+            )}
+
             <button
               onClick={() => window.open(`https://www.google.com/maps/search/${encodeURIComponent(location ? `nearest ${agency} to ${location}` : `nearest ${agency}`)}`, '_blank')}
               className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-orange-100 text-orange-700 border border-orange-200 rounded-lg font-bold hover:bg-orange-200 shadow-sm dark:bg-orange-900/30 dark:text-orange-300 dark:border-orange-800 btn-hover-effect"
